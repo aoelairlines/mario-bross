@@ -81,6 +81,7 @@ Dokumen ini adalah rencana kerja universal dan log perkembangan proyek pembuatan
 
 | Versi | Tanggal | Pelaksana | Ringkasan Perubahan | Referensi Commit |
 | :--- | :--- | :--- | :--- | :--- |
+| **v0.4.2** | 2026-10-31 | AI | Efek suara baru: koin bernada cerah khas arcade, impact saat menabrak monster, dan jingle kekalahan yang diputar bersamaan dengan tampilnya layar GAME OVER | `-` |
 | **v0.4.1** | 2026-10-31 | AI | Perbaikan hasil review: clamp kecepatan jalan vs BOOST, koin tidak lagi tertanam di platform, hint tombol diperjelas, reset menu memakai `startLevel`, dan hapus cabang render blok mati | `-` |
 | **v0.4.0** | 2026-10-31 | AI | Fitur BOOST lari (Shift/tombol B) dengan meter tenaga, lompat variabel (↑/Spasi/tombol A), tunduk/fast-fall (↓), tombol on-screen ala Mario (D-pad + A/B + pause), sistem 4 level (Summer, Wonderland, Autumn, Winter) dengan background prosedural, pit, goal, bonus skor, overlay pause/level clear/victory, serta akses leaderboard dari menu | `-` |
 | **v0.3.0** | 2026-10-24 | AI | Rilis game lengkap: Pixel Coin Adventure (platformer Mario-like), 8 blok modular, grafis pixel warna-warna (rumput hijau + tanah krim), koin, monster slime, fisika tabrakan, Web Audio API, leaderboard LocalStorage | `-` |

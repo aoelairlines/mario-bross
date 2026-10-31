@@ -534,13 +534,43 @@ function playTone(type, freq, duration, vol = 0.1, delay = 0) {
   osc.stop(t + duration);
 }
 
+function playSlide(type, fromFreq, toFreq, duration, vol = 0.1, delay = 0) {
+  if (!audioCtx) return;
+  const t = audioCtx.currentTime + delay;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(fromFreq, t);
+  osc.frequency.exponentialRampToValueAtTime(Math.max(20, toFreq), t + duration);
+  gain.gain.setValueAtTime(vol, t);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start(t);
+  osc.stop(t + duration);
+}
+
 function sfxStart()     { ensureAudio(); playTone('square', 392, 0.1, 0.1); playTone('square', 523, 0.1, 0.1, 0.1); playTone('square', 659, 0.14, 0.1, 0.2); }
 function sfxJump()      { ensureAudio(); playTone('square', 440, 0.12, 0.12); playTone('square', 554, 0.12, 0.08, 0.04); }
 function sfxBoost()     { ensureAudio(); playTone('triangle', 330, 0.08, 0.07); playTone('triangle', 660, 0.12, 0.06, 0.05); }
-function sfxCoin()      { ensureAudio(); playTone('triangle', 988, 0.1, 0.15); playTone('triangle', 1320, 0.1, 0.1, 0.06); }
+function sfxCoin() {
+  ensureAudio();
+  playTone('square', 988, 0.07, 0.14);
+  playTone('square', 1319, 0.17, 0.12, 0.06);
+  playTone('triangle', 1976, 0.12, 0.05, 0.12);
+}
 function sfxStomp()     { ensureAudio(); playTone('sawtooth', 220, 0.15, 0.15); playTone('sawtooth', 110, 0.15, 0.1, 0.05); }
-function sfxHit()       { ensureAudio(); playTone('sawtooth', 150, 0.25, 0.2); playTone('sawtooth', 100, 0.25, 0.15, 0.08); }
-function sfxGameOver()  { ensureAudio(); playTone('sawtooth', 120, 0.4, 0.25); playTone('sawtooth', 80, 0.4, 0.2, 0.18); }
+function sfxHit() {
+  ensureAudio();
+  playSlide('sawtooth', 240, 60, 0.24, 0.2);
+  playTone('square', 90, 0.16, 0.15, 0.02);
+}
+function sfxGameOver() {
+  ensureAudio();
+  [523, 415, 330, 262].forEach((freq, i) => playTone('square', freq, 0.16, 0.12, i * 0.14));
+  playTone('triangle', 131, 0.5, 0.16, 0.56);
+  playSlide('sawtooth', 170, 55, 0.65, 0.07, 0.56);
+}
 function sfxLevelClear(){ ensureAudio(); [523, 659, 784, 1047].forEach((f, i) => playTone('square', f, 0.16, 0.12, i * 0.11)); }
 
 /* ============================================================
@@ -1004,7 +1034,6 @@ function killPlayer() {
   if (!player.alive) return;
   player.alive = false;
   sfxHit();
-  setTimeout(() => sfxGameOver(), 300);
   spawnParticles(player.x + player.w / 2, player.y + player.h / 2, '#ff4444', 10);
   showPlayingUI(false);
 
@@ -1016,6 +1045,7 @@ function killPlayer() {
     document.getElementById('finalTitle').style.color = '#ff4444';
     document.getElementById('finalScore').textContent = `Skor Akhir: ${score} · Level ${currentLevel}`;
     showScreen('gameoverScreen');
+    sfxGameOver();
     saveScore(score);
   }, 900);
 }

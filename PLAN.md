@@ -69,6 +69,9 @@ Dokumen ini adalah rencana kerja universal dan log perkembangan proyek pembuatan
 | **T-04** | Logika Pergerakan, Rintangan & Tabrakan | Phase 3 | `DONE` | AI | Fisika platformer, AABB collision, kamera follow |
 | **T-05** | Efek Suara Synth Web Audio API & Partikel | Phase 4 | `DONE` | AI | Suara lompat/koin/stomp/gameover + partikel |
 | **T-06** | Deployment GitHub Pages via GitHub CLI (`gh`) | Phase 5 | `TODO` | AI | Publikasi live & verifikasi zero-cache |
+| **T-07** | Fitur BOOST lari, lompat variabel (↑), tunduk, dan tombol on-screen ala Mario | Phase 3 | `DONE` | AI | Shift / tombol B = boost, ↑/Spasi / tombol A = lompat, ↓ = tunduk/fast-fall, HUD tenaga boost, tombol A/B + D-pad + pause |
+| **T-08** | Sistem multi-level & background tema (Summer, Wonderland, Autumn, Winter) | Phase 3 | `DONE` | AI | 4 level dengan pit, platform, goal, bonus skor, transisi level, dan background prosedural berbeda tiap tema |
+| **T-09** | Overlay pause, level clear, victory, dan akses leaderboard dari menu | Phase 4 | `DONE` | AI | Pause (P/ESC), ulangi level, lanjut level, layar kemenangan, tombol leaderboard di menu |
 
 *Status: `TODO` | `IN-PROGRESS` | `DONE`*
 
@@ -78,6 +81,8 @@ Dokumen ini adalah rencana kerja universal dan log perkembangan proyek pembuatan
 
 | Versi | Tanggal | Pelaksana | Ringkasan Perubahan | Referensi Commit |
 | :--- | :--- | :--- | :--- | :--- |
+| **v0.4.1** | 2026-10-31 | AI | Perbaikan hasil review: clamp kecepatan jalan vs BOOST, koin tidak lagi tertanam di platform, hint tombol diperjelas, reset menu memakai `startLevel`, dan hapus cabang render blok mati | `-` |
+| **v0.4.0** | 2026-10-31 | AI | Fitur BOOST lari (Shift/tombol B) dengan meter tenaga, lompat variabel (↑/Spasi/tombol A), tunduk/fast-fall (↓), tombol on-screen ala Mario (D-pad + A/B + pause), sistem 4 level (Summer, Wonderland, Autumn, Winter) dengan background prosedural, pit, goal, bonus skor, overlay pause/level clear/victory, serta akses leaderboard dari menu | `-` |
 | **v0.3.0** | 2026-10-24 | AI | Rilis game lengkap: Pixel Coin Adventure (platformer Mario-like), 8 blok modular, grafis pixel warna-warna (rumput hijau + tanah krim), koin, monster slime, fisika tabrakan, Web Audio API, leaderboard LocalStorage | `-` |
 | **v0.2.2** | 2026-10-24 | AI | Menambahkan panduan alur integrasi khusus Google AI Studio & penegasan repo wajib Public | `07475fb` |
 | **v0.2.1** | 2026-10-24 | AI | Menambahkan panduan detail aktivasi GitHub Pages (CLI gh api & Web UI visual) serta troubleshooting | `3aaf671` |

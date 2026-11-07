@@ -10,8 +10,9 @@ Dokumen ini adalah rencana kerja dan log perkembangan proyek game arcade 3D dala
 - **Genre**: 3D Arcade Platformer (kamera 2.5D, geometri WebGL penuh)
 - **Format**: Single-File HTML (`index.html`) tanpa dependensi eksternal
 - **Renderer**: Raw WebGL 1.0 — tanpa Three.js, tanpa library, tanpa file aset
-- **Karakter**: Plumber low-poly bergaya Mario (topi merah + emblem M, kumis, overall biru, sarung tangan putih) yang dibangun 100% dari primitif 3D prosedural
+- **Karakter**: Plumber low-poly bergaya Mario (topi merah + emblem M, kumis, overall biru, sarung tangan putih) yang dibangun 100% dari primitif 3D prosedural, dengan **postur menghadap samping (profil)** dan aksesori **bendera kecil di atas topi**
 - **Tema Latar**: 4 sektor futuristik — Neon City, Holo Garden, Solar District, Cryo Core
+- **Portal & Flag**: Bendera kemenangan besar di atas portal + animasi karakter tersedot ke dimensi lain (kamera zoom, vortex CSS, putaran, pengecilan, dan tembus bidang portal) sebelum layar level clear muncul
 - **Isi Dunia 3D**: Skyline neon prosedural, gedung berjendela holografik, mobil terbang, planet bercincin, kabut kedalaman, grid lantai, portal energi, koin torus, drone musuh, bayangan, partikel, dan glow additive
 - **Audio**: Web Audio API sintetis
 - **Penyimpanan**: LocalStorage (`arcade_leaderboard`, `arcade_last_username`)
@@ -53,8 +54,11 @@ Dokumen ini adalah rencana kerja dan log perkembangan proyek game arcade 3D dala
 ### Phase 4: Render 3D, Efek Suara & Visual Juice
 - [x] WebGL shader untuk objek solid, neon additive, glow billboard, dan sky prosedural.
 - [x] Karakter 3D beranimasi: lari, lompat, tunduk, boost, landing squash, dan death spin.
+- [x] Postur karakter menghadap samping kiri/kanan, dengan mata profil, badge topi samping, dan bendera kecil di atas topi.
 - [x] Dunia 3D prosedural: gedung, jendela, mobil terbang, planet, koin, portal, drone, bayangan.
-- [x] Efek suara arcade sintetis (jump, koin, stomp, boost, hit, game over, level clear).
+- [x] Bendera kemenangan besar di atas portal dan area final yang bersih dari platform.
+- [x] Animasi masuk portal: karakter ditarik ke pusat ring, berputar, mengecil, tembus bidang portal, kamera zoom, vortex overlay, dan suara dimensi.
+- [x] Efek suara arcade sintetis (jump, koin, stomp, boost, hit, game over, level clear, portal).
 - [x] Partikel, floating score popup, screen shake, flash, dan level banner.
 - [x] Pemilih tema latar (Background Mode) di menu untuk preview 4 sektor.
 
@@ -84,6 +88,7 @@ Dokumen ini adalah rencana kerja dan log perkembangan proyek game arcade 3D dala
 | **T-11** | Background mode 4 tema + preview menu | Phase 4 | `DONE` | AI | Tombol tema langsung mengganti scene |
 | **T-12** | UI futuristik + responsif + adaptive resolution | Phase 4 | `DONE` | AI | Desktop, tablet, ponsel |
 | **T-13** | Pengujian Chrome & regresi gameplay | Phase 5 | `DONE` | AI | Koin, stomp, level clear, victory, pause, localStorage, mobile |
+| **T-14** | Profil samping, bendera topi, bendera portal, animasi suction | Phase 4 | `DONE` | AI | Karakter menghadap kiri/kanan; bendera di topi dan di atas portal; transisi dimensi + kamera zoom |
 
 *Status: `TODO` | `IN-PROGRESS` | `DONE`*
 
@@ -93,7 +98,8 @@ Dokumen ini adalah rencana kerja dan log perkembangan proyek game arcade 3D dala
 
 | Versi | Tanggal | Pelaksana | Ringkasan Perubahan | Referensi Commit |
 | :--- | :--- | :--- | :--- | :--- |
-| **v0.5.0** | 2026-11-07 | AI | Transformasi total ke **Mario Neon 3D**: renderer WebGL 3D prosedural tanpa library, karakter plumber low-poly beranimasi, 4 background futuristik (Neon City, Holo Garden, Solar District, Cryo Core), skyline gedung neon, planet bercincin, mobil terbang, portal energi, koin torus, drone, bayangan, fog, bloom additive, UI cyberpunk baru, preview tema di menu, mobile layout, adaptive resolution, dan pengujian lengkap | `-` |
+| **v0.6.0** | 2026-11-07 | AI | Karakter diubah ke **postur profil samping** kiri/kanan dengan mata samping dan badge topi samping; aksesori **bendera kecil di atas topi**; **bendera kemenangan besar** di atas portal; **animasi tersedot portal**: kamera zoom, vortex CSS, karakter berputar-mengecil-tembus bidang portal, partikel pusaran, dan SFX dimensi; area final diperpanjang agar bendera/portal tidak tertutup platform; pengujian desktop, mobile, level clear, final victory, pause, dan retry | `-` |
+| **v0.5.0** | 2026-11-07 | AI | Transformasi total ke **Mario Neon 3D**: renderer WebGL 3D prosedural tanpa library, karakter plumber low-poly beranimasi, 4 background futuristik (Neon City, Holo Garden, Solar District, Cryo Core), skyline gedung neon, planet bercincin, mobil terbang, portal energi, koin torus, drone, bayangan, fog, bloom additive, UI cyberpunk baru, preview tema di menu, mobile layout, adaptive resolution, dan pengujian lengkap | `30e897f` |
 | **v0.4.2** | 2026-10-31 | AI | Efek suara baru: koin bernada cerah khas arcade, impact saat menabrak monster, dan jingle kekalahan | `-` |
 | **v0.4.1** | 2026-10-31 | AI | Perbaikan hasil review: clamp kecepatan jalan vs BOOST, koin tidak tertanam di platform, hint tombol diperjelas, reset menu memakai `startLevel` | `-` |
 | **v0.4.0** | 2026-10-31 | AI | Fitur BOOST, lompat variabel, tunduk, tombol on-screen, 4 level dengan tema prosedural, overlay pause/level clear/victory | `-` |
@@ -111,4 +117,6 @@ Dokumen ini adalah rencana kerja dan log perkembangan proyek game arcade 3D dala
 - **Struktur 8 blok**: config/WebGL, audio, input, state/entity, collision/physics, LocalStorage, rendering/UI, game loop.
 - **Kualitas adaptif**: device pixel ratio dibatasi 1.5; bila FPS terukur < 30, resolusi render diturunkan otomatis ke 72% tanpa mengubah layout.
 - **Kontrol**: `← →`/`A D` gerak, `Shift`/`B` boost, `↑`/`Space` lompat, `↓` tunduk, `P`/`Esc` pause.
+- **Portal entry**: saat menyentuh goal, fisika normal dihentikan sementara, kamera fokus ke portal, karakter dianimasikan masuk, lalu level clear/victory dipicu setelah ±1,27 detik. Pause dinonaktifkan selama transisi.
+- **Runway final**: lebar tiap level ditambah 160 px agar portal dan bendera kemenangan berada di area kosong, tidak bertabrakan dengan platform terakhir.
 - **Zero-Cache**: setiap update yang di-push langsung aktif setelah deploy GitHub Pages selesai.

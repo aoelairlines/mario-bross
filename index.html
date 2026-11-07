@@ -214,6 +214,30 @@
     0% { opacity: 0.65; background: #ff284d; }
     100% { opacity: 0; background: #ff284d; }
   }
+  #portalFx {
+    position: absolute;
+    inset: -22%;
+    z-index: 17;
+    pointer-events: none;
+    opacity: 0;
+    mix-blend-mode: screen;
+    transform-origin: 50% 50%;
+    background:
+      radial-gradient(circle at 50% 50%, transparent 0 7%, rgba(var(--a-rgb), 0.22) 19%, transparent 55%),
+      repeating-conic-gradient(from 0deg at 50% 50%,
+        rgba(var(--a-rgb), 0) 0deg 9deg,
+        rgba(var(--a-rgb), 0.16) 10deg 12deg,
+        rgba(var(--a2-rgb), 0) 13deg 24deg,
+        rgba(var(--a2-rgb), 0.14) 25deg 27deg,
+        rgba(255, 255, 255, 0) 28deg 46deg);
+  }
+  #portalFx.active { animation: portalSuck 1.3s cubic-bezier(.25, .6, .15, 1) forwards; }
+  @keyframes portalSuck {
+    0% { opacity: 0; transform: scale(2.2) rotate(0deg); filter: blur(12px); }
+    18% { opacity: 0.85; }
+    55% { opacity: 0.72; }
+    100% { opacity: 0; transform: scale(0.04) rotate(300deg); filter: blur(1px); }
+  }
 
   #ui { position: absolute; inset: 0; z-index: 10; pointer-events: none; }
   #hud {
@@ -845,6 +869,7 @@
     <div class="fx fx-scanlines"></div>
     <div class="fx fx-vignette"></div>
     <div id="flash"></div>
+    <div id="portalFx"></div>
     <div id="webglError" class="hidden">
       WebGL 3D tidak tersedia di browser ini.<br>
       Aktifkan akselerasi hardware atau coba Chrome / Edge terbaru.
@@ -1656,6 +1681,12 @@ function sfxStomp()     { ensureAudio(); playSlide('sawtooth', 260, 90, 0.18, 0.
 function sfxHit()       { ensureAudio(); playSlide('sawtooth', 240, 55, 0.32, 0.17); playTone('square', 90, 0.18, 0.12, 0.02); }
 function sfxGameOver()  { ensureAudio(); [523,415,330,262].forEach((f,i)=>playTone('square', f, 0.16, 0.10, i*0.14)); playTone('triangle', 131, 0.55, 0.15, 0.56); playSlide('sawtooth', 170, 50, 0.7, 0.06, 0.56); }
 function sfxLevelClear(){ ensureAudio(); [523,659,784,1047,1319].forEach((f,i)=>playTone('square', f, 0.15, 0.10, i*0.09)); playTone('triangle', 1568, 0.45, 0.05, 0.46); }
+function sfxPortal() {
+  ensureAudio();
+  playSlide('sine', 180, 1400, 0.85, 0.075);
+  playSlide('sawtooth', 900, 90, 0.9, 0.045, 0.18);
+  [523, 659, 784, 1047, 1319, 1568].forEach((f, i) => playTone('triangle', f, 0.28, 0.045, 0.2 + i * 0.075));
+}
 
 /* ============================================================
    3. INPUT HANDLING
@@ -1735,6 +1766,9 @@ let levelStartCoins = 0;
 let username = localStorage.getItem('arcade_last_username') || '';
 let previewTheme = 0;
 
+const portalEntry = { active: false, done: false, t: 0, duration: 76 };
+let portalFxTimeout = 0;
+
 const player = {
   x: 40, y: GROUND_Y - 20, w: 12, h: 20,
   vx: 0, vy: 0,
@@ -1748,7 +1782,8 @@ const player = {
   boostEmpty: false,
   boosting: false,
   wasBoosting: false,
-  alive: true
+  alive: true,
+  enteringPortal: false
 };
 
 const entities = {
@@ -2031,6 +2066,11 @@ const LEVELS = [
     ]
   }
 ];
+
+// Each sector gets a clear victory runway so the portal, flag, and
+// suction animation never intersect the final platform.
+LEVELS.forEach(cfg => { cfg.width += 160; });
+
 /* ============================================================
    4B. PROCEDURAL 3D WORLD (static scene)
    ============================================================ */
@@ -2431,6 +2471,78 @@ function spawnParticles(x, y, color, count = 6) {
   }
 }
 
+function resetPortalEntry() {
+  portalEntry.active = false;
+  portalEntry.done = false;
+  portalEntry.t = 0;
+  player.enteringPortal = false;
+  clearTimeout(portalFxTimeout);
+  const fx = document.getElementById('portalFx');
+  if (fx) fx.classList.remove('active');
+}
+
+function startPortalEntry() {
+  if (portalEntry.active || portalEntry.done || gameState !== STATE_PLAYING) return;
+  portalEntry.active = true;
+  portalEntry.done = false;
+  portalEntry.t = 0;
+  player.enteringPortal = true;
+  player.vx = 0;
+  player.vy = 0;
+  player.boosting = false;
+  player.boostEmpty = false;
+  player.crouching = false;
+  clearInputs();
+  sfxPortal();
+  shakeTime = 0.45;
+  shakePower = 5;
+
+  const fx = document.getElementById('portalFx');
+  if (fx) {
+    fx.classList.remove('active');
+    void fx.offsetWidth;
+    fx.classList.add('active');
+    clearTimeout(portalFxTimeout);
+    portalFxTimeout = setTimeout(() => fx.classList.remove('active'), 1500);
+  }
+
+  const theme = THEMES[LEVELS[currentLevel - 1].theme];
+  for (let i = 0; i < 18; i++) {
+    const a = Math.random() * Math.PI * 2;
+    const r = 10 + Math.random() * 45;
+    spawnParticles(
+      goal.x + 5 + Math.cos(a) * r,
+      goal.y + 44 + Math.sin(a) * r,
+      i % 2 ? theme.accent : theme.accent2,
+      1
+    );
+  }
+}
+
+function updatePortalEntry() {
+  if (!portalEntry.active) return;
+  portalEntry.t++;
+  const theme = THEMES[LEVELS[currentLevel - 1].theme];
+
+  if (frameCount % 2 === 0) {
+    const a = Math.random() * Math.PI * 2;
+    const r = 30 + Math.random() * 80;
+    spawnParticles(
+      goal.x + 5 + Math.cos(a) * r,
+      goal.y + 44 + Math.sin(a) * r,
+      Math.random() < 0.5 ? theme.accent : theme.accent2,
+      1
+    );
+  }
+
+  if (portalEntry.t >= portalEntry.duration) {
+    portalEntry.active = false;
+    portalEntry.done = true;
+    player.enteringPortal = false;
+    completeLevel();
+  }
+}
+
 function startLevel(resetStats) {
   if (resetStats) {
     score = 0;
@@ -2439,6 +2551,7 @@ function startLevel(resetStats) {
   levelStartScore = score;
   levelStartCoins = coins;
 
+  resetPortalEntry();
   player.x = 64;
   player.y = GROUND_Y - player.h;
   player.vx = 0;
@@ -2495,6 +2608,10 @@ function updateParticles() {
 
 function updatePhysics() {
   updateParticles();
+  if (player.enteringPortal) {
+    updatePortalEntry();
+    return;
+  }
   if (!player.alive) return;
 
   if (levelIntroTimer > 0) levelIntroTimer--;
@@ -2634,7 +2751,7 @@ function updatePhysics() {
   });
 
   if (rectIntersect(playerRect, { x: goal.x, y: goal.y, w: goal.w, h: goal.h })) {
-    completeLevel();
+    startPortalEntry();
     return;
   }
 
@@ -2839,12 +2956,29 @@ function updateCameraMatrices() {
     sx = Math.sin(visualTime * 83) * shakePower * k;
     sy = Math.cos(visualTime * 97) * shakePower * k * 0.7;
   }
-  _eye[0] = cx + sx;
-  _eye[1] = CAMERA_Y + sy;
-  _eye[2] = CAMERA_Z;
-  _target[0] = cx + sx * 0.35;
-  _target[1] = CAMERA_TARGET_Y + sy * 0.25;
-  _target[2] = 0;
+  let focus = 0;
+  if (scene && scene.portal && (portalEntry.active || portalEntry.done) &&
+      gameState !== STATE_MENU && gameState !== STATE_LEADERBOARD) {
+    const raw = portalEntry.active ? portalEntry.t / portalEntry.duration : 1;
+    focus = raw * raw * (3 - 2 * raw);
+  }
+
+  if (focus > 0) {
+    const p = scene.portal;
+    _eye[0] = p.x + sx * 0.4;
+    _eye[1] = CAMERA_Y - 48 * focus + sy;
+    _eye[2] = CAMERA_Z - 235 * focus;
+    _target[0] = p.x;
+    _target[1] = CAMERA_TARGET_Y - 38 * focus;
+    _target[2] = 0;
+  } else {
+    _eye[0] = cx + sx;
+    _eye[1] = CAMERA_Y + sy;
+    _eye[2] = CAMERA_Z;
+    _target[0] = cx + sx * 0.35;
+    _target[1] = CAMERA_TARGET_Y + sy * 0.25;
+    _target[2] = 0;
+  }
 
   const aspect = canvas.width / Math.max(1, canvas.height);
   M4.perspective(_proj, CAMERA_FOV * Math.PI / 180, aspect, CAMERA_NEAR, CAMERA_FAR);
@@ -2992,10 +3126,38 @@ function drawShadowAt(gx, feetGameY, width, depth) {
   drawSolidMesh(MESH.cylinder, [0.008, 0.012, 0.028], 0, _shadowM);
 }
 
+function drawGoalFlag(theme) {
+  if (!scene || !scene.portal) return;
+  const p = scene.portal;
+  const poleZ = p.z - 34;
+
+  // pole + base + golden finial
+  M4.trs(_partA, p.x, 180, poleZ, 0, 0, 0, 2.6, 360, 2.6);
+  drawSolidMesh(MESH.cylinder, [0.48, 0.54, 0.66], 0.10, _partA);
+  M4.trs(_partA, p.x, 5, poleZ, 0, 0, 0, 18, 10, 18);
+  drawSolidMesh(MESH.cylinder, [0.10, 0.14, 0.22], 0.06, _partA);
+  M4.trs(_partA, p.x, 362, poleZ, 0, 0, 0, 6.5, 6.5, 6.5);
+  drawSolidMesh(MESH.sphere, PC.gold, 1.1, _partA);
+  queueGlow(p.x, 362, poleZ + 5, 24, PC.gold, 0.55);
+
+  // waving sector flag above the portal
+  const segW = 16;
+  for (let i = 0; i < 6; i++) {
+    const wave = Math.sin(visualTime * 3.8 - i * 0.85);
+    const x = p.x + 8 + i * segW + segW / 2;
+    const y = 348 - i * 1.5 + wave * 2.2;
+    const z = poleZ + 1 + wave * 6;
+    M4.trs(_partA, x, y, z, 0, wave * 0.10, wave * 0.07, segW + 1, 27 - i * 2.4, 1.6);
+    const col = i === 1 ? PC.white : (i % 2 ? theme.accentRgb : theme.accent2Rgb);
+    drawSolidMesh(MESH.box, col, 0.42, _partA);
+  }
+}
+
 function drawPortal(theme) {
   if (!scene || !scene.portal) return;
   const p = scene.portal;
-  const pulse = 1 + Math.sin(visualTime * 2.1) * 0.035;
+  const entryRaw = portalEntry.active ? Math.min(1, portalEntry.t / portalEntry.duration) : 0;
+  const pulse = 1 + Math.sin(visualTime * 2.1) * 0.035 + entryRaw * 0.06;
   const cy = p.y + Math.sin(visualTime * 1.3) * 4;
 
   M4.trs(_partA, p.x, cy, p.z - 7, Math.PI / 2, 0, 0, 80 * pulse, 3.2, 80 * pulse);
@@ -3003,10 +3165,10 @@ function drawPortal(theme) {
   M4.trs(_partA, p.x, cy, p.z - 4, Math.PI / 2, 0, 0, 63 * pulse, 2.0, 63 * pulse);
   drawSolidMesh(MESH.cylinder, rgbMix(theme.portal, theme.portal2, 0.45), 0.55, _partA);
 
-  M4.trs(_partA, p.x, cy, p.z, 0, 0, visualTime * 0.45, 104 * pulse, 104 * pulse, 104 * pulse);
+  M4.trs(_partA, p.x, cy, p.z, 0, 0, visualTime * (0.45 + entryRaw * 3.4), 104 * pulse, 104 * pulse, 104 * pulse);
   drawSolidMesh(MESH.portalTorus, theme.portal, 1.35, _partA);
 
-  M4.trs(_partA, p.x, cy, p.z - 2, 0, 0, -visualTime * 0.8 + 0.6, 78 * pulse, 78 * pulse, 78 * pulse);
+  M4.trs(_partA, p.x, cy, p.z - 2, 0, 0, -visualTime * (0.8 + entryRaw * 2.6) + 0.6, 78 * pulse, 78 * pulse, 78 * pulse);
   drawSolidMesh(MESH.portalTorus2, theme.portal2, 1.6, _partA);
 
   M4.trs(_partA, p.x, cy, p.z - 4, 0, 0, visualTime * 1.3, 58, 58, 58);
@@ -3030,6 +3192,23 @@ function drawPortal(theme) {
   for (let i = 0; i < 5; i++) {
     const yy = 20 + i * 32;
     queueGlow(p.x, yy, p.z + 8, 24 - i * 2.5, theme.portal2, 0.12 + i * 0.015);
+  }
+
+  if (portalEntry.active) {
+    const vortexGlow = 1 - entryRaw * 0.55;
+    for (let i = 0; i < 30; i++) {
+      const a = i / 30 * Math.PI * 2 + visualTime * (5.5 + entryRaw * 7);
+      const r = (138 - entryRaw * 88) * (0.45 + (i % 5) * 0.12);
+      queueGlow(
+        p.x + Math.cos(a) * r,
+        cy + Math.sin(a) * r,
+        p.z + 18 + Math.sin(a * 2) * 14,
+        8 + (i % 4) * 2,
+        i % 2 ? theme.portal : theme.portal2,
+        0.48 * vortexGlow
+      );
+    }
+    queueGlow(p.x, cy, p.z + 12, 165 * (1 - entryRaw * 0.4), theme.portal, 0.32);
   }
 }
 
@@ -3105,24 +3284,59 @@ function drawCharacterPart(mesh, color, emissive, parent, x, y, z, rx, ry, rz, s
 
 function drawPlayer(theme) {
   if (!player.alive && deathT > 1.35) return;
+  if (portalEntry.done && gameState !== STATE_PLAYING) return;
 
-  const px = (player.x + player.w / 2) * WORLD_S;
-  const py = gameToWorldY(player.y + player.h);
+  const entering = portalEntry.active;
+  const et = entering ? Math.min(1, portalEntry.t / portalEntry.duration) : 0;
+  const ee = et * et * (3 - 2 * et);
+
+  let px = (player.x + player.w / 2) * WORLD_S;
+  let py = gameToWorldY(player.y + player.h);
+  let pz = 0;
   const speed = Math.abs(player.vx);
-  const running = speed > 0.22 && player.grounded;
-  const air = !player.grounded;
+  const running = !entering && speed > 0.22 && player.grounded;
+  const air = !player.grounded || entering;
   const phase = visualTime * (7.5 + speed * 1.45);
-  const bob = running ? Math.abs(Math.sin(phase)) * 2.0 : Math.sin(visualTime * 2.1) * 1.1;
-  const crouch = player.crouching ? 0.79 : 1;
-  const squash = Math.max(0, landSquash);
+  const bob = entering ? 0 : (running ? Math.abs(Math.sin(phase)) * 2.0 : Math.sin(visualTime * 2.1) * 1.1);
+  const crouch = player.crouching && !entering ? 0.79 : 1;
+  const squash = entering ? 0 : Math.max(0, landSquash);
   const sy = crouch * (1 - squash * 0.13);
   const sxz = crouch * (1 + squash * 0.06);
-  const deathRot = !player.alive ? Math.min(2.4, deathT * 2.4) : 0;
-  const lean = -player.vx * 0.012 + (player.boosting ? -0.07 : 0);
+  let lean = entering ? 0 : (-player.vx * 0.010 + (player.boosting ? -0.04 : 0));
+  let visualX = 0.95 * sxz;
+  let visualY = 0.95 * sy;
+  let rotY = player.dir * Math.PI / 2;
+  let deathLift = 0;
+  let extraSpin = 0;
 
-  drawShadowAt(player.x + player.w / 2, player.y + player.h, 42, 29);
+  if (!player.alive) {
+    deathLift = -Math.sin(Math.min(1, deathT) * Math.PI) * 34;
+    extraSpin = Math.min(8, deathT * 5.5);
+  }
 
-  M4.trs(_root, px, py, 0, 0, player.dir * 0.075, lean + deathRot, 0.95 * sxz, 0.95 * sy, 0.95 * sxz);
+  if (entering && scene && scene.portal) {
+    const target = scene.portal;
+    const startX = px;
+    const startY = py;
+    const moveE = 1 - Math.pow(1 - et, 2.2);
+    const scaleE = Math.pow(et, 1.35);
+    px = startX + (target.x - startX) * moveE + Math.sin(moveE * 13) * 26 * (1 - moveE);
+    py = startY + (target.y - 55 - startY) * moveE + Math.cos(moveE * 13) * 14 * (1 - moveE);
+    pz = -120 * Math.pow(scaleE, 4);
+    extraSpin = moveE * 11;
+    const shrink = 1 - 0.96 * scaleE;
+    const stretch = 1 + Math.sin(et * Math.PI) * 0.32;
+    visualX = 0.95 * shrink * stretch;
+    visualY = 0.95 * shrink * (1 + Math.sin(et * Math.PI) * 0.12);
+  }
+
+  if (!entering && !portalEntry.done) {
+    drawShadowAt(player.x + player.w / 2, player.y + player.h, 38, 24);
+  }
+
+  // Character now faces sideways: local +Z becomes world +X, so running
+  // swings read as forward/back motion in a clean side profile.
+  M4.trs(_root, px, py + deathLift, pz, lean, rotY + extraSpin, 0, visualX, visualY, visualX);
 
   // running / jumping leg angles
   const swing = running ? Math.sin(phase) * 0.72 : 0;
@@ -3160,18 +3374,19 @@ function drawPlayer(theme) {
   // neck
   drawCharacterPart(MESH.cylinder, PC.skin, 0.02, _root, 0, 91 + bob, 0, 0, 0, 0, 10, 9, 10);
 
-  // arms (pivot at shoulders)
-  const armLift = air ? 2.05 : 0.06;
+  // arms (pivot at shoulders) — forward/back swing in profile
+  const armSwing = running ? Math.sin(phase) * 0.58 : 0;
+  const jumpArm = entering ? 2.75 : (air ? 2.15 : 0);
   [
-    { x: -32, angX: running ? -Math.sin(phase) * 0.58 : 0, angZ: -armLift },
-    { x: 32, angX: running ? Math.sin(phase) * 0.58 : 0, angZ: armLift }
-  ].forEach((A, i) => {
-    M4.trs(_groupA, A.x, 83 + bob, 0, A.angX, 0, A.angZ, 1, 1, 1);
+    { x: -32, z: -8, angX: running ? -armSwing : jumpArm },
+    { x: 32, z: 4, angX: running ? armSwing : jumpArm * 0.82 }
+  ].forEach((A) => {
+    M4.trs(_groupA, A.x, 83 + bob, A.z, A.angX, 0, 0, 1, 1, 1);
     M4.multiply(_groupB, _root, _groupA);
 
-    drawCharacterPart(MESH.cylinder, PC.red, 0.08, _groupB, 0, -14, 0, 0, 0, 0, 8.5, 28, 8.5);
-    drawCharacterPart(MESH.cylinder, PC.white, 0.12, _groupB, 0, -25.5, 0, 0, 0, 0, 9.2, 4.5, 9.2);
-    drawCharacterPart(MESH.sphere, PC.white, 0.13, _groupB, 0, -31, 1, 0, 0, 0, 9.5, 9.5, 9.5);
+    drawCharacterPart(MESH.cylinder, PC.red, 0.08, _groupB, 0, -14, 0, 0, 0, 0, 8.0, 28, 8.0);
+    drawCharacterPart(MESH.cylinder, PC.white, 0.12, _groupB, 0, -25.5, 0, 0, 0, 0, 8.7, 4.5, 8.7);
+    drawCharacterPart(MESH.sphere, PC.white, 0.13, _groupB, 0, -31, 1, 0, 0, 0, 8.5, 8.5, 8.5);
   });
 
   // head group
@@ -3184,14 +3399,17 @@ function drawPlayer(theme) {
   drawCharacterPart(MESH.sphere, PC.skin, 0.02, H, 24, -1, 0, 0, 0, 0, 6.4, 7.6, 5.4);
   drawCharacterPart(MESH.sphere, PC.skinLight, 0.04, H, 0, -3, 24.5, 0, 0, 0, 7.4, 6.5, 7.8);
 
-  // eyes
-  [-8.4, 8.4].forEach(ex => {
-    drawCharacterPart(MESH.sphere, PC.white, 0.04, H, ex, 6, 20.5, 0, 0, 0, 5.4, 6.4, 3.8);
-    drawCharacterPart(MESH.sphere, PC.eye, 0.22, H, ex, 6, 23.5, 0, 0, 0, 2.4, 2.9, 1.8);
-    drawCharacterPart(MESH.box, PC.brownDark, 0.02, H, ex, 12.3, 20.7, 0, 0, ex < 0 ? -0.16 : 0.16, 8.3, 2.4, 1.6);
+  // profile eye, brow and mouth on each side (only the camera-side pair is visible)
+  [-1, 1].forEach(side => {
+    const ex = side * 24.4;
+    drawCharacterPart(MESH.sphere, PC.white, 0.04, H, ex, 6, 5.5, 0, 0, 0, 2.7, 5.8, 4.7);
+    drawCharacterPart(MESH.sphere, PC.eye, 0.25, H, ex + side * 2.35, 6, 5.5, 0, 0, 0, 1.3, 2.5, 1.9);
+    drawCharacterPart(MESH.box, PC.brownDark, 0.02, H, ex + side * 0.5, 12.2, 6.0, 0, 0, 0, 1.2, 2.0, 6.2);
+    drawCharacterPart(MESH.box, PC.brownDark, 0.02, H, ex + side * 0.4, -14.5, 6.0, 0, 0, 0, 1.1, 1.5, 5.6);
+    drawCharacterPart(MESH.sphere, PC.brownDark, 0.02, H, ex + side * 0.2, -9.2, 6.4, 0, 0, 0, 2.2, 4.2, 6.2);
   });
 
-  // moustache + mouth
+  // moustache + front mouth
   [-7.2, 7.2].forEach(mx => {
     drawCharacterPart(MESH.sphere, PC.brownDark, 0.02, H, mx, -10, 24.0, 0, 0, mx < 0 ? -0.22 : 0.22, 8.9, 4.5, 5.5);
   });
@@ -3204,12 +3422,31 @@ function drawPlayer(theme) {
   drawCharacterPart(MESH.box, PC.red, 0.12, H, 0, 8.5, 27, 0, 0, 0, 46, 4, 19);
   drawCharacterPart(MESH.box, PC.redDark, 0.05, H, 0, 6.8, 28, 0, 0, 0, 46, 1.5, 18);
 
-  // white cap badge + red M
-  drawCharacterPart(MESH.cylinder, PC.white, 0.2, H, 0, 18, 27.8, Math.PI / 2, 0, 0, 8.2, 2.1, 8.2);
-  drawCharacterPart(MESH.box, PC.red, 0.12, H, -3.9, 18, 30.2, 0, 0, 0, 2.1, 8.0, 1.0);
-  drawCharacterPart(MESH.box, PC.red, 0.12, H, 3.9, 18, 30.2, 0, 0, 0, 2.1, 8.0, 1.0);
-  drawCharacterPart(MESH.box, PC.red, 0.12, H, -1.8, 18, 30.2, 0, 0, 0.62, 1.8, 6.8, 1.0);
-  drawCharacterPart(MESH.box, PC.red, 0.12, H, 1.8, 18, 30.2, 0, 0, -0.62, 1.8, 6.8, 1.0);
+  // side cap badges, readable when the plumber faces left/right
+  [-1, 1].forEach(side => {
+    const bx = side * 29.4;
+    drawCharacterPart(MESH.cylinder, PC.white, 0.16, H, bx, 18, 0, 0, 0, side > 0 ? -Math.PI / 2 : Math.PI / 2, 7.2, 1.4, 7.2);
+    const ox = side * 30.5;
+    drawCharacterPart(MESH.box, PC.red, 0.12, H, ox, 18, -2.2, 0, 0, 0, 0.9, 7.2, 1.5);
+    drawCharacterPart(MESH.box, PC.red, 0.12, H, ox, 18, 2.2, 0, 0, 0, 0.9, 7.2, 1.5);
+    drawCharacterPart(MESH.box, PC.red, 0.12, H, ox, 18, 0, 0.55, 0, 0, 0.9, 6.4, 1.3);
+    drawCharacterPart(MESH.box, PC.red, 0.12, H, ox, 18, 0, -0.55, 0, 0, 0.9, 6.4, 1.3);
+  });
+
+  // little flag accessory just above the cap
+  drawCharacterPart(MESH.cylinder, PC.gold, 0.35, H, 0, 39, 0, 0, 0, 0, 1.0, 14, 1.0);
+  drawCharacterPart(MESH.sphere, PC.gold, 0.5, H, 0, 47, 0, 0, 0, 0, 1.8, 1.8, 1.8);
+  for (let i = 0; i < 3; i++) {
+    const wave = Math.sin(visualTime * 6.5 - i * 1.1);
+    drawCharacterPart(
+      MESH.box,
+      i === 1 ? theme.accent2Rgb : theme.accentRgb,
+      0.44, H,
+      0, 42 - i * 0.8, -3 - i * 5,
+      wave * 0.22, 0, 0,
+      1.0, 6.0 - i * 1.0, 5
+    );
+  }
 
   // boost speed lines
   if (player.boosting) {
@@ -3223,6 +3460,22 @@ function drawPlayer(theme) {
         7 + age * 8,
         theme.accentRgb,
         0.25 * (1 - age)
+      );
+    }
+  }
+
+  if (entering) {
+    const bodyY = py + 52;
+    queueGlow(px, bodyY, pz + 18, 48 * (1 - ee), theme.portal, 0.38 * (1 - ee));
+    for (let i = 0; i < 8; i++) {
+      const a = visualTime * 8.5 + i / 8 * Math.PI * 2;
+      queueGlow(
+        px + Math.cos(a) * 55 * (1 - ee),
+        bodyY + Math.sin(a) * 55 * (1 - ee),
+        pz + 26,
+        9.5,
+        i % 2 ? theme.portal : theme.portal2,
+        0.42 * (1 - ee)
       );
     }
   }
@@ -3321,6 +3574,7 @@ function renderFrame() {
 
   // dynamic solid geometry
   glowCount = 0;
+  drawGoalFlag(theme);
   drawPortal(theme);
   drawCoins(theme);
   drawMonsters(theme);
@@ -3395,7 +3649,7 @@ function showPlayingUI(show) {
 }
 
 function togglePause() {
-  if (gameState === STATE_PLAYING && player.alive) {
+  if (gameState === STATE_PLAYING && player.alive && !portalEntry.active && !portalEntry.done) {
     gameState = STATE_PAUSED;
     const theme = THEMES[LEVELS[currentLevel - 1].theme];
     document.getElementById('pauseInfo').textContent = `SECTOR ${String(currentLevel).padStart(2, '0')} · ${theme.name} — SKOR ${score}`;
@@ -3418,6 +3672,7 @@ function initMenuScene() {
   levelStartCoins = 0;
   levelWidth = LEVELS[0].width;
   buildLevel(1);
+  resetPortalEntry();
   player.x = 96;
   player.y = GROUND_Y - player.h;
   player.vx = 0;

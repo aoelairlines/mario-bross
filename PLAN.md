@@ -1,60 +1,68 @@
-# PLAN.md — Universal 2D Arcade Game Roadmap (Untuk Siswa)
+# PLAN.md — Futuristic 3D Arcade Game Roadmap (Untuk Siswa)
 
-Dokumen ini adalah rencana kerja universal dan log perkembangan proyek pembuatan game arcade 2D dalam 1 file `index.html`. Dokumen ini diperbarui secara otomatis oleh AI setiap kali ada perubahan kode sebelum push ke GitHub.
+Dokumen ini adalah rencana kerja dan log perkembangan proyek game arcade 3D dalam 1 file `index.html`. Dokumen ini diperbarui setiap kali ada perubahan kode sebelum push ke GitHub.
 
 ---
 
 ## 1. Ikhtisar Game
 
-- **Judul Game**: Pixel Coin Adventure
-- **Genre**: 2D Arcade Game
+- **Judul Game**: Mario Neon 3D
+- **Genre**: 3D Arcade Platformer (kamera 2.5D, geometri WebGL penuh)
 - **Format**: Single-File HTML (`index.html`) tanpa dependensi eksternal
-- **Platform**: Web Browser (Desktop & Mobile Responsive)
-- **Audio**: Web Audio API Sintetis
+- **Renderer**: Raw WebGL 1.0 — tanpa Three.js, tanpa library, tanpa file aset
+- **Karakter**: Plumber low-poly bergaya Mario (topi merah + emblem M, kumis, overall biru, sarung tangan putih) yang dibangun 100% dari primitif 3D prosedural
+- **Tema Latar**: 4 sektor futuristik — Neon City, Holo Garden, Solar District, Cryo Core
+- **Isi Dunia 3D**: Skyline neon prosedural, gedung berjendela holografik, mobil terbang, planet bercincin, kabut kedalaman, grid lantai, portal energi, koin torus, drone musuh, bayangan, partikel, dan glow additive
+- **Audio**: Web Audio API sintetis
 - **Penyimpanan**: LocalStorage (`arcade_leaderboard`, `arcade_last_username`)
 - **Kebijakan Caching**: Zero-Cache (`no-cache, no-store, must-revalidate`)
-- **Deployment**: GitHub Pages (Branch `main`, path `/`)
+- **Deployment**: GitHub Pages (Branch `master`, path `/`)
+- **Catatan IP**: Fan-made tribute. Seluruh model, tekstur, dan efek dibuat prosedural; tidak memakai aset resmi Nintendo.
 
 ---
 
 ## 2. Fase Pengembangan Universal
 
 ### Phase 0: Brainstorming & Desain Game
-- [ ] Siswa menentukan ide & tema game (misal: Space Defender, Flappy Arcade, Catch & Dodge, Brick Breaker, Snake).
-- [ ] Menentukan kontrol permainan (Keyboard, Mouse, atau Sentuh).
-- [ ] Menentukan aturan menang/kalah dan sistem penambahan skor.
-- [ ] Menentukan gaya visual (Retro Pixel, Neon Glow, atau Minimalis).
+- [x] Menentukan ide & tema: platformer 3D futuristik dengan karakter plumber bergaya Mario.
+- [x] Menentukan kontrol: keyboard (Arrow/WASD/Shift/Space/P) + tombol sentuh.
+- [x] Menentukan aturan menang/kalah: kumpulkan koin, injak drone, hindari pit/monster, capai portal.
+- [x] Menentukan gaya visual: low-poly 3D neon cyberpunk dengan bloom additive dan 4 palet tema.
 
 ### Phase 1: Setup Single-File `index.html`
-- [ ] Buat kerangka HTML5 dengan meta tag **Zero-Cache**.
-- [ ] Siapkan kanvas responsif dengan rasio layar tetap.
-- [ ] Susun struktur kode modular 8 blok di JavaScript.
-- [ ] Siapkan game loop utama (`requestAnimationFrame`).
+- [x] Kerangka HTML5 dengan meta tag Zero-Cache.
+- [x] Kanvas WebGL responsif dengan aspect ratio 4:3.
+- [x] Struktur kode modular 8 blok.
+- [x] Game loop `requestAnimationFrame` dengan fixed timestep fisika 60 Hz.
+- [x] Adaptive resolution untuk perangkat dengan FPS rendah.
 
 ### Phase 2: Username & Leaderboard LocalStorage
-- [ ] Buat modal input username dengan validasi nama (1–15 karakter, anti-XSS).
-- [ ] Simpan dan baca username terakhir dari `arcade_last_username`.
-- [ ] Buat fungsi penyimpanan dan penyortiran Top 10 skor di `arcade_leaderboard`.
-- [ ] Buat tampilan antarmuka (UI) tabel peringkat skor di menu game.
+- [x] Input username dengan validasi 1–15 karakter dan sanitasi anti-XSS.
+- [x] Menyimpan username terakhir di `arcade_last_username`.
+- [x] Menyimpan Top 10 skor di `arcade_leaderboard`.
+- [x] UI tabel leaderboard yang bisa diakses dari menu.
 
-### Phase 3: Mekanik Inti Permainan (Core Gameplay)
-- [ ] Sistem status game (`MENU`, `PLAYING`, `PAUSED`, `GAMEOVER`).
-- [ ] Karakter pemain (pergerakan dan batas layar).
-- [ ] Rintangan / musuh (kecepatan, variasi, dan pola kemunculan).
-- [ ] Deteksi tabrakan (Collision Detection) dan perhitungan skor.
+### Phase 3: Mekanik Inti Permainan
+- [x] State `MENU`, `PLAYING`, `PAUSED`, `LEVELCLEAR`, `GAMEOVER`, `LEADERBOARD`.
+- [x] Pergerakan pemain, akselerasi, gesekan, coyote time, jump buffer.
+- [x] Boost dengan meter energi, lompat variabel, tunduk/fast-fall.
+- [x] Rintangan, pit, platform, koin, drone patroli.
+- [x] AABB collision dan kamera follow.
+- [x] 4 level dengan layout berbeda dan transisi level.
 
-### Phase 4: Efek Suara & Visual Juice
-- [ ] Efek suara arcade sintetis dengan Web Audio API (Start, Gerak, Tabrakan, Game Over).
-- [ ] Efek ledakan partikel sederhana saat tabrakan/poin didapat.
-- [ ] Efek getar layar (screen shake) saat game over.
+### Phase 4: Render 3D, Efek Suara & Visual Juice
+- [x] WebGL shader untuk objek solid, neon additive, glow billboard, dan sky prosedural.
+- [x] Karakter 3D beranimasi: lari, lompat, tunduk, boost, landing squash, dan death spin.
+- [x] Dunia 3D prosedural: gedung, jendela, mobil terbang, planet, koin, portal, drone, bayangan.
+- [x] Efek suara arcade sintetis (jump, koin, stomp, boost, hit, game over, level clear).
+- [x] Partikel, floating score popup, screen shake, flash, dan level banner.
+- [x] Pemilih tema latar (Background Mode) di menu untuk preview 4 sektor.
 
 ### Phase 5: Publikasi GitHub Pages
-- [ ] Inisialisasi git dan branch `main`.
-- [ ] Buat repository GitHub publik via GitHub CLI (`gh repo create <repo> --public --source=. --remote=origin --push`). *Wajib berstatus Public agar GitHub Pages gratis dapat aktif.*
-- [ ] Aktifkan GitHub Pages (Metode CLI `gh api` atau manual via Web UI Settings > Pages branch `main` root `/`).
-- [ ] Kompatibilitas Google AI Studio: Sediakan snippet perintah terminal siap salin jika proyek dilanjutkan lewat antarmuka web.
-- [ ] Pantau status workflow build di tab Actions (`gh run list`).
-- [ ] Tes live demo (`https://<username>.github.io/<repo>/`) dan pastikan pembaruan langsung tampil tanpa hambatan cache (Zero-Cache test).
+- [x] Repository GitHub publik `aoelairlines/mario-bross`.
+- [x] GitHub Pages aktif dari branch `master` root `/`.
+- [x] Zero-Cache terpasang agar update langsung terlihat.
+- [x] Verifikasi live demo: `https://aoelairlines.github.io/mario-bross/`.
 
 ---
 
@@ -62,16 +70,20 @@ Dokumen ini adalah rencana kerja universal dan log perkembangan proyek pembuatan
 
 | ID | Tugas / Fitur | Fase | Status | Pelaksana | Catatan |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **T-00** | Pembuatan template `AGENTS.md` & `PLAN.md` untuk Siswa | Fondasi | `DONE` | AI | Template standar single model siap |
-| **T-01** | Brainstorming Ide & Konsep Game Spesifik | Phase 0 | `DONE` | AI + Siswa | Konsep: Pixel Coin Adventure (platformer mirip Mario, kumpulkan koin, hindari monster) |
-| **T-02** | Pembuatan Skeleton `index.html` & Meta Zero-Cache | Phase 1 | `DONE` | AI | 8 blok modular siap pakai |
-| **T-03** | Modul Input Username & Leaderboard Top 10 | Phase 2 | `DONE` | AI | LocalStorage CRUD, sanitasi input, UI tabel |
-| **T-04** | Logika Pergerakan, Rintangan & Tabrakan | Phase 3 | `DONE` | AI | Fisika platformer, AABB collision, kamera follow |
-| **T-05** | Efek Suara Synth Web Audio API & Partikel | Phase 4 | `DONE` | AI | Suara lompat/koin/stomp/gameover + partikel |
-| **T-06** | Deployment GitHub Pages via GitHub CLI (`gh`) | Phase 5 | `TODO` | AI | Publikasi live & verifikasi zero-cache |
-| **T-07** | Fitur BOOST lari, lompat variabel (↑), tunduk, dan tombol on-screen ala Mario | Phase 3 | `DONE` | AI | Shift / tombol B = boost, ↑/Spasi / tombol A = lompat, ↓ = tunduk/fast-fall, HUD tenaga boost, tombol A/B + D-pad + pause |
-| **T-08** | Sistem multi-level & background tema (Summer, Wonderland, Autumn, Winter) | Phase 3 | `DONE` | AI | 4 level dengan pit, platform, goal, bonus skor, transisi level, dan background prosedural berbeda tiap tema |
-| **T-09** | Overlay pause, level clear, victory, dan akses leaderboard dari menu | Phase 4 | `DONE` | AI | Pause (P/ESC), ulangi level, lanjut level, layar kemenangan, tombol leaderboard di menu |
+| **T-00** | Template `AGENTS.md` & `PLAN.md` | Fondasi | `DONE` | AI | Template standar siswa |
+| **T-01** | Konsep game 3D futuristik | Phase 0 | `DONE` | AI + Siswa | Mario-inspired 3D platformer |
+| **T-02** | Skeleton `index.html` + Zero-Cache | Phase 1 | `DONE` | AI | Single-file, tanpa dependensi |
+| **T-03** | Username & leaderboard Top 10 | Phase 2 | `DONE` | AI | LocalStorage, sanitasi, tabel |
+| **T-04** | Fisika platformer & tabrakan | Phase 3 | `DONE` | AI | AABB, coyote time, jump buffer |
+| **T-05** | Audio synth & partikel | Phase 4 | `DONE` | AI | Web Audio API, efek arcade |
+| **T-06** | Deploy GitHub Pages | Phase 5 | `DONE` | AI | `https://aoelairlines.github.io/mario-bross/` |
+| **T-07** | Boost, variabel jump, tunduk, tombol sentuh | Phase 3 | `DONE` | AI | Shift/B + D-pad + A/B |
+| **T-08** | 4 level dengan tema futuristik | Phase 3 | `DONE` | AI | Neon City, Holo Garden, Solar District, Cryo Core |
+| **T-09** | Pause, level clear, victory, leaderboard | Phase 4 | `DONE` | AI | Alur layar lengkap |
+| **T-10** | Renderer WebGL 3D + karakter 3D | Phase 4 | `DONE` | AI | Prosedural, low-poly, beranimasi |
+| **T-11** | Background mode 4 tema + preview menu | Phase 4 | `DONE` | AI | Tombol tema langsung mengganti scene |
+| **T-12** | UI futuristik + responsif + adaptive resolution | Phase 4 | `DONE` | AI | Desktop, tablet, ponsel |
+| **T-13** | Pengujian Chrome & regresi gameplay | Phase 5 | `DONE` | AI | Koin, stomp, level clear, victory, pause, localStorage, mobile |
 
 *Status: `TODO` | `IN-PROGRESS` | `DONE`*
 
@@ -81,11 +93,22 @@ Dokumen ini adalah rencana kerja universal dan log perkembangan proyek pembuatan
 
 | Versi | Tanggal | Pelaksana | Ringkasan Perubahan | Referensi Commit |
 | :--- | :--- | :--- | :--- | :--- |
-| **v0.4.2** | 2026-10-31 | AI | Efek suara baru: koin bernada cerah khas arcade, impact saat menabrak monster, dan jingle kekalahan yang diputar bersamaan dengan tampilnya layar GAME OVER | `-` |
-| **v0.4.1** | 2026-10-31 | AI | Perbaikan hasil review: clamp kecepatan jalan vs BOOST, koin tidak lagi tertanam di platform, hint tombol diperjelas, reset menu memakai `startLevel`, dan hapus cabang render blok mati | `-` |
-| **v0.4.0** | 2026-10-31 | AI | Fitur BOOST lari (Shift/tombol B) dengan meter tenaga, lompat variabel (↑/Spasi/tombol A), tunduk/fast-fall (↓), tombol on-screen ala Mario (D-pad + A/B + pause), sistem 4 level (Summer, Wonderland, Autumn, Winter) dengan background prosedural, pit, goal, bonus skor, overlay pause/level clear/victory, serta akses leaderboard dari menu | `-` |
-| **v0.3.0** | 2026-10-24 | AI | Rilis game lengkap: Pixel Coin Adventure (platformer Mario-like), 8 blok modular, grafis pixel warna-warna (rumput hijau + tanah krim), koin, monster slime, fisika tabrakan, Web Audio API, leaderboard LocalStorage | `-` |
-| **v0.2.2** | 2026-10-24 | AI | Menambahkan panduan alur integrasi khusus Google AI Studio & penegasan repo wajib Public | `07475fb` |
-| **v0.2.1** | 2026-10-24 | AI | Menambahkan panduan detail aktivasi GitHub Pages (CLI gh api & Web UI visual) serta troubleshooting | `3aaf671` |
-| **v0.2.0** | 2026-10-24 | AI | Konfigurasi ulang ke Single Model AI untuk siswa, modularisasi 8 blok kode, dan penyesuaian matriks tugas | `2954bb0` |
-| **v0.1.0** | 2026-10-24 | AI | Inisialisasi awal file sistem `AGENTS.md` dan universal blueprint `PLAN.md` | `47aa88e` |
+| **v0.5.0** | 2026-11-07 | AI | Transformasi total ke **Mario Neon 3D**: renderer WebGL 3D prosedural tanpa library, karakter plumber low-poly beranimasi, 4 background futuristik (Neon City, Holo Garden, Solar District, Cryo Core), skyline gedung neon, planet bercincin, mobil terbang, portal energi, koin torus, drone, bayangan, fog, bloom additive, UI cyberpunk baru, preview tema di menu, mobile layout, adaptive resolution, dan pengujian lengkap | `-` |
+| **v0.4.2** | 2026-10-31 | AI | Efek suara baru: koin bernada cerah khas arcade, impact saat menabrak monster, dan jingle kekalahan | `-` |
+| **v0.4.1** | 2026-10-31 | AI | Perbaikan hasil review: clamp kecepatan jalan vs BOOST, koin tidak tertanam di platform, hint tombol diperjelas, reset menu memakai `startLevel` | `-` |
+| **v0.4.0** | 2026-10-31 | AI | Fitur BOOST, lompat variabel, tunduk, tombol on-screen, 4 level dengan tema prosedural, overlay pause/level clear/victory | `-` |
+| **v0.3.0** | 2026-10-24 | AI | Rilis game lengkap Pixel Coin Adventure: platformer 2D Mario-like, 8 blok modular, leaderboard LocalStorage | `-` |
+| **v0.2.2** | 2026-10-24 | AI | Panduan integrasi Google AI Studio & penegasan repo wajib Public | `07475fb` |
+| **v0.2.1** | 2026-10-24 | AI | Panduan aktivasi GitHub Pages (CLI & Web UI) | `3aaf671` |
+| **v0.2.0** | 2026-10-24 | AI | Single Model AI untuk siswa, modularisasi 8 blok | `2954bb0` |
+| **v0.1.0** | 2026-10-24 | AI | Inisialisasi `AGENTS.md` dan `PLAN.md` | `47aa88e` |
+
+---
+
+## 5. Catatan Teknis
+
+- **Tanpa dependensi**: tidak ada CDN, library, file gambar, atau model eksternal. Semua geometri dibuat dengan `SolidBuilder`/`NeonBuilder`, semua tekstur efek dibuat lewat shader.
+- **Struktur 8 blok**: config/WebGL, audio, input, state/entity, collision/physics, LocalStorage, rendering/UI, game loop.
+- **Kualitas adaptif**: device pixel ratio dibatasi 1.5; bila FPS terukur < 30, resolusi render diturunkan otomatis ke 72% tanpa mengubah layout.
+- **Kontrol**: `← →`/`A D` gerak, `Shift`/`B` boost, `↑`/`Space` lompat, `↓` tunduk, `P`/`Esc` pause.
+- **Zero-Cache**: setiap update yang di-push langsung aktif setelah deploy GitHub Pages selesai.

@@ -6,14 +6,14 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<meta name="theme-color" content="#05030f">
-<title>Mario Neon 3D — Futuristic Arcade Platformer</title>
+<meta name="theme-color" content="#09131f">
+<title>Mario 3D Adventure — Colorful Arcade Platformer</title>
 <style>
   :root {
-    --a: #22e6ff;
-    --a2: #ff2bd6;
-    --a-rgb: 34, 230, 255;
-    --a2-rgb: 255, 43, 214;
+    --a: #ff9f1c;
+    --a2: #3fa34d;
+    --a-rgb: 255, 159, 28;
+    --a2-rgb: 63, 163, 77;
     --ink: #eaf7ff;
     --muted: #8aa2bd;
     --panel: rgba(5, 10, 24, 0.92);
@@ -24,10 +24,10 @@
   html, body { min-height: 100%; }
   body {
     background:
-      radial-gradient(circle at 18% 8%, rgba(34, 230, 255, 0.10), transparent 34%),
-      radial-gradient(circle at 82% 16%, rgba(255, 43, 214, 0.09), transparent 32%),
-      radial-gradient(circle at 50% 110%, rgba(87, 55, 255, 0.16), transparent 45%),
-      #04030d;
+      radial-gradient(circle at 18% 8%, rgba(255, 183, 3, 0.10), transparent 34%),
+      radial-gradient(circle at 82% 16%, rgba(110, 198, 255, 0.09), transparent 32%),
+      radial-gradient(circle at 50% 110%, rgba(126, 200, 227, 0.12), transparent 45%),
+      #09131f;
     color: var(--ink);
     font-family: var(--mono);
     display: flex;
@@ -48,9 +48,9 @@
     inset: -20%;
     z-index: -2;
     background:
-      radial-gradient(circle at 22% 24%, rgba(0, 229, 255, 0.13), transparent 28%),
-      radial-gradient(circle at 76% 30%, rgba(255, 43, 214, 0.10), transparent 30%),
-      radial-gradient(circle at 50% 78%, rgba(112, 71, 255, 0.14), transparent 36%);
+      radial-gradient(circle at 22% 24%, rgba(255, 183, 3, 0.11), transparent 28%),
+      radial-gradient(circle at 76% 30%, rgba(110, 198, 255, 0.10), transparent 30%),
+      radial-gradient(circle at 50% 78%, rgba(126, 200, 227, 0.10), transparent 36%);
     filter: blur(28px);
     animation: aurora 18s ease-in-out infinite alternate;
   }
@@ -67,7 +67,7 @@
     mask-image: radial-gradient(ellipse at 50% 20%, #000 0%, transparent 72%);
     transform: perspective(520px) rotateX(62deg) scale(1.8);
     transform-origin: 50% 100%;
-    opacity: 0.5;
+    opacity: 0.22;
     animation: gridDrift 11s linear infinite;
   }
   @keyframes aurora {
@@ -195,11 +195,11 @@
   .fx-scanlines {
     background: repeating-linear-gradient(0deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 3px);
     mix-blend-mode: overlay;
-    opacity: 0.42;
+    opacity: 0.16;
   }
   .fx-vignette {
-    background: radial-gradient(ellipse at 50% 46%, transparent 48%, rgba(0, 0, 10, 0.42) 100%);
-    box-shadow: inset 0 0 90px 16px rgba(0, 0, 0, 0.45);
+    background: radial-gradient(ellipse at 50% 46%, transparent 55%, rgba(0, 0, 10, 0.30) 100%);
+    box-shadow: inset 0 0 70px 10px rgba(0, 0, 0, 0.28);
   }
   #flash {
     position: absolute;
@@ -856,7 +856,7 @@
   <header class="topbar">
     <div class="brand">
       <div class="brand-kicker"><span class="dot"></span> Fan-made 3D tribute · WebGL</div>
-      <h1>Mario <span>Neon</span> 3D</h1>
+      <h1>Mario <span>3D</span> Adventure</h1>
     </div>
     <div class="status-cluster">
       <div class="status-pill"><span>Render</span><b>WebGL 3D</b></div>
@@ -865,7 +865,7 @@
   </header>
 
   <div id="gameContainer">
-    <canvas id="gameCanvas" width="960" height="720" aria-label="Mario Neon 3D — game platformer futuristik"></canvas>
+    <canvas id="gameCanvas" width="960" height="720" aria-label="Mario 3D Adventure — game platformer warna-warni"></canvas>
     <div class="fx fx-scanlines"></div>
     <div class="fx fx-vignette"></div>
     <div id="flash"></div>
@@ -877,7 +877,7 @@
 
     <div id="ui">
       <div id="hud">
-        <div class="hud-chip level"><span class="k">SECTOR</span><span class="v" id="hudLevel">01 · NEON CITY</span></div>
+        <div class="hud-chip level"><span class="k">WORLD</span><span class="v" id="hudLevel">01 · SUNNY PLAZA</span></div>
         <div class="hud-chip"><span class="k">SCORE</span><span class="v" id="hudScore">000000</span></div>
         <div class="hud-chip"><span class="k">COINS</span><span class="v" id="hudCoins">0</span></div>
       </div>
@@ -885,9 +885,9 @@
       <button id="btnPause" class="hidden" aria-label="Pause" title="Pause (P / ESC)">II</button>
 
       <div id="levelBanner">
-        <span class="lb-kicker" id="lbKicker">SECTOR 01</span>
-        <strong id="lbTitle">NEON CITY</strong>
-        <small id="lbSub">CYBER DISTRICT</small>
+        <span class="lb-kicker" id="lbKicker">WORLD 01</span>
+        <strong id="lbTitle">SUNNY PLAZA</strong>
+        <small id="lbSub">TAMAN CERAH</small>
       </div>
       <div id="popups"></div>
 
@@ -895,11 +895,11 @@
         <div class="panel menu-panel">
           <div class="menu-cols">
             <div class="menu-hero">
-              <p class="eyebrow">3D futuristic platformer // mission 01</p>
-              <h2>Mario <em>Neon</em> 3D<span>Cyber World</span></h2>
+              <p class="eyebrow">3D colorful platformer // world 01</p>
+              <h2>Mario <em>3D</em> Adventure<span>Color World</span></h2>
               <p class="menu-blurb">
-                Lompati distrik neon, kumpulkan koin energi, injak drone patroli,
-                lalu capai portal holografik di ujung setiap sektor.
+                Lompati taman warna, kumpulkan koin, injak drone patroli,
+                lalu capai portal ajaib di ujung setiap dunia.
               </p>
               <label class="field-label" for="inputUsername">PLAYER TAG // 1–15 KARAKTER</label>
               <input type="text" id="inputUsername" maxlength="15" placeholder="PLAYER1" autocomplete="off" spellcheck="false">
@@ -911,21 +911,21 @@
             </div>
 
             <aside class="intel">
-              <div class="intel-head"><span>BACKGROUND MODE</span><b id="previewName">NEON CITY</b></div>
+              <div class="intel-head"><span>TEMA DUNIA</span><b id="previewName">SUNNY PLAZA</b></div>
               <div class="theme-grid" id="themeGrid">
-                <button class="theme-chip active" data-theme="0"><span>01</span>NEON CITY</button>
-                <button class="theme-chip" data-theme="1"><span>02</span>HOLO GARDEN</button>
-                <button class="theme-chip" data-theme="2"><span>03</span>SOLAR DISTRICT</button>
-                <button class="theme-chip" data-theme="3"><span>04</span>CRYO CORE</button>
+                <button class="theme-chip active" data-theme="0"><span>01</span>SUNNY PLAZA</button>
+                <button class="theme-chip" data-theme="1"><span>02</span>CANDY CLOUDS</button>
+                <button class="theme-chip" data-theme="2"><span>03</span>GOLDEN AUTUMN</button>
+                <button class="theme-chip" data-theme="3"><span>04</span>SNOWY TOWN</button>
               </div>
               <div class="control-card">
-                <span class="mini-label">CONTROL LINK</span>
+                <span class="mini-label">KONTROL</span>
                 <div class="keyrow"><kbd>←</kbd><kbd>→</kbd><kbd>A</kbd><kbd>D</kbd><span>GERAK</span></div>
                 <div class="keyrow"><kbd>SHIFT</kbd><kbd>B</kbd><span>BOOST</span></div>
                 <div class="keyrow"><kbd>↑</kbd><kbd>SPACE</kbd><span>LOMPAT</span></div>
                 <div class="keyrow"><kbd>↓</kbd><kbd>P</kbd><span>TUNDUK / PAUSE</span></div>
               </div>
-              <div class="dlc-note">4 SECTOR · 4 THEME · 1 PORTAL</div>
+              <div class="dlc-note">4 DUNIA · 4 TEMA · 1 PORTAL</div>
             </aside>
           </div>
           <div class="menu-foot">
@@ -937,7 +937,7 @@
 
       <div id="leaderboardScreen" class="overlay hidden">
         <div class="panel">
-          <p class="eyebrow">LOCAL STORAGE // TOP 10</p>
+          <p class="eyebrow">SKOR TERSIMPAN // TOP 10</p>
           <h2>Leaderboard</h2>
           <p class="sub">Skor tersimpan otomatis di perangkat ini.</p>
           <div class="tableWrap">
@@ -952,12 +952,12 @@
 
       <div id="gameoverScreen" class="overlay hidden">
         <div class="panel narrow">
-          <p class="eyebrow">RUN TERMINATED // SYSTEM REPORT</p>
+          <p class="eyebrow">PETUALANGAN BERAKHIR // LAPORAN</p>
           <h2 id="finalTitle" style="color:#ff4d6d;">Game Over</h2>
           <p class="sub" id="finalSub">Portal belum tercapai. Coba lagi, plumber.</p>
           <div class="final-score" id="finalScore">000000</div>
           <div class="final-meta">
-            <span class="meta-chip" id="finalLevel">SECTOR 01</span>
+            <span class="meta-chip" id="finalLevel">WORLD 01</span>
             <span class="meta-chip" id="finalCoins">0 KOIN</span>
           </div>
           <div class="stack">
@@ -969,9 +969,9 @@
 
       <div id="pauseScreen" class="overlay hidden">
         <div class="panel narrow">
-          <p class="eyebrow">SIMULATION PAUSED</p>
+          <p class="eyebrow">PERMAINAN DIJEDA</p>
           <h2>Paused</h2>
-          <p class="sub" id="pauseInfo">Sector 01 · Neon City</p>
+          <p class="sub" id="pauseInfo">World 01 · Sunny Plaza</p>
           <div class="stack">
             <button id="btnResume" class="btn primary">Lanjutkan</button>
             <button class="btn" id="btnRestartLevel">Ulangi Level</button>
@@ -982,7 +982,7 @@
 
       <div id="levelClearScreen" class="overlay hidden">
         <div class="panel narrow">
-          <p class="eyebrow">SECTOR CLEARED // DATA SECURED</p>
+          <p class="eyebrow">LEVEL SELESAI // JALAN TERBUKA</p>
           <h2 id="levelClearTitle" style="color:var(--a);">Level Selesai!</h2>
           <p class="sub" id="levelClearInfo"></p>
           <button id="btnNextLevel" class="btn primary">Lanjut</button>
@@ -1005,7 +1005,7 @@
 </div>
 
 <footer>
-  <span><b>MARIO NEON 3D</b> · FAN-MADE TRIBUTE · BUKAN PRODUK RESMI NINTENDO</span>
+  <span><b>MARIO 3D ADVENTURE</b> · FAN-MADE TRIBUTE · BUKAN PRODUK RESMI NINTENDO</span>
   <span><b>← →</b> GERAK · <b>SHIFT</b> BOOST · <b>↑/SPACE</b> LOMPAT · <b>P</b> PAUSE</span>
 </footer>
 
@@ -1268,8 +1268,8 @@ void main() {
   float hemi = 0.5 + 0.5 * n.y;
   float rim = pow(1.0 - max(dot(n, v), 0.0), 2.2);
   vec3 base = vColor * uTint;
-  vec3 lit = base * (0.30 + 0.58 * diff + 0.22 * hemi);
-  lit += uRim * rim * 0.52;
+  vec3 lit = base * (0.42 + 0.52 * diff + 0.20 * hemi);
+  lit += uRim * rim * 0.42;
   vec3 emissive = base * 1.35 + uRim * 0.22;
   lit = mix(lit, emissive, clamp(vEmissive * uEmissiveMul, 0.0, 1.0));
   float fog = smoothstep(uFogNear, uFogFar, vDepth);
@@ -1345,6 +1345,8 @@ uniform vec3 uBottom;
 uniform vec3 uAccent;
 uniform vec3 uAccent2;
 uniform vec2 uPlanet;
+uniform float uStars;
+uniform float uCloud;
 float hash(vec2 p) {
   p = fract(p * vec2(123.34, 456.21));
   p += dot(p, p + 45.32);
@@ -1357,28 +1359,28 @@ void main() {
 
   vec2 starGrid = floor(uv * vec2(uRes.x / 3.2, uRes.y / 3.2));
   float h = hash(starGrid);
-  float star = step(0.9982, h);
+  float star = step(0.9982, h) * uStars;
   float tw = 0.55 + 0.45 * sin(uTime * 2.1 + h * 43.0);
-  col += vec3(0.78, 0.92, 1.0) * star * tw * smoothstep(0.32, 0.8, uv.y);
+  col += vec3(0.92, 0.96, 1.0) * star * tw * smoothstep(0.32, 0.8, uv.y);
 
-  float neb = sin(uv.x * 7.0 + uTime * 0.05)
-            + sin(uv.x * 13.0 - uv.y * 5.0 + uTime * 0.03)
-            + sin(uv.y * 17.0 + uTime * 0.02);
-  col += uAccent * smoothstep(0.5, 1.7, neb) * 0.035;
-  col += uAccent2 * smoothstep(0.9, 1.9, -neb) * 0.022;
+  // soft clouds instead of a neon nebula / holographic sky
+  float c1 = sin(uv.x * 6.0 + uTime * 0.020 + sin(uv.y * 9.0) * 0.6);
+  float c2 = sin(uv.x * 11.0 - uTime * 0.012 + 1.7);
+  float c3 = sin((uv.x + uv.y * 0.6) * 17.0 + 3.0);
+  float cloud = smoothstep(0.42, 0.94, c1 * 0.45 + c2 * 0.35 + c3 * 0.20 + 0.55);
+  cloud *= smoothstep(0.22, 0.56, uv.y) * (1.0 - smoothstep(0.68, 0.96, uv.y));
+  col = mix(col, vec3(1.0, 0.985, 0.95), cloud * 0.30 * uCloud);
 
-  col += uAccent2 * exp(-pow((uv.y - 0.44) * 7.0, 2.0)) * 0.14;
-  col += uAccent * exp(-pow((uv.y - 0.34) * 12.0, 2.0)) * 0.06;
+  col += uAccent * exp(-pow((uv.y - 0.40) * 8.0, 2.0)) * 0.06;
 
   vec2 p = (uv - uPlanet) * vec2(uRes.x / uRes.y, 1.0);
   float d = length(p);
-  float disc = smoothstep(0.118, 0.112, d);
-  float ring = 1.0 - smoothstep(0.0, 0.013, abs(length(p * vec2(1.0, 3.0)) - 0.215));
-  col = mix(col, uAccent * 0.75 + vec3(0.05, 0.02, 0.1), disc * 0.92);
-  col += uAccent2 * ring * 0.45;
-  col += uAccent * exp(-d * 7.5) * 0.20;
+  float disc = smoothstep(0.108, 0.098, d);
+  vec3 sunCol = mix(uAccent, vec3(1.0, 0.97, 0.88), 0.38);
+  col = mix(col, sunCol, disc * 0.88);
+  col += uAccent * exp(-d * 8.0) * 0.22;
 
-  col *= 0.972 + 0.028 * sin(gl_FragCoord.y * 3.14159);
+  col *= 0.988 + 0.012 * sin(gl_FragCoord.y * 3.14159);
   gl_FragColor = vec4(col, 1.0);
 }`;
 
@@ -1396,7 +1398,7 @@ const neonU = uniformMap(neonProg, [
 ]);
 const glowU = uniformMap(glowProg, ['uProj','uView']);
 const skyU = uniformMap(skyProg, [
-  'uRes','uTime','uTop','uMid','uBottom','uAccent','uAccent2','uPlanet'
+  'uRes','uTime','uTop','uMid','uBottom','uAccent','uAccent2','uPlanet','uStars','uCloud'
 ]);
 
 const solidAttr = {
@@ -1815,135 +1817,152 @@ function rgbScale(a, f) { return [a[0] * f, a[1] * f, a[2] * f]; }
 
 const THEME_DEFS = [
   {
-    id: 'neon-city',
-    name: 'NEON CITY',
-    subtitle: 'DISTRIK SIBER',
+    id: 'sunny-plaza',
+    name: 'SUNNY PLAZA',
+    subtitle: 'TAMAN CERAH',
     code: '01',
-    accent: '#22e6ff',
-    accent2: '#ff2bd6',
-    skyTop: '#02010a',
-    skyMid: '#080b2b',
-    skyBottom: '#291350',
-    fog: '#050817',
-    cityBody: '#0a1430',
-    cityTop: '#16265a',
-    cityEdge: '#1ae0ff',
-    cityEdge2: '#ff35d3',
-    windowA: '#67f7ff',
-    windowB: '#ff65df',
-    groundBody: '#081224',
-    groundTop: '#102442',
-    groundEdge: '#16d8ff',
-    platformBody: '#081226',
-    platformTop: '#0d2240',
-    warn: '#ff315f',
-    monster: '#ff3cae',
-    monsterDark: '#240b38',
-    monsterEye: '#b8ffff',
-    portal: '#ff2bd6',
-    portal2: '#22e6ff',
+    accent: '#ff9f1c',
+    accent2: '#3fa34d',
+    skyTop: '#5ab9ff',
+    skyMid: '#a9dcff',
+    skyBottom: '#fff4cf',
+    fog: '#cfe6f2',
+    cityBody: '#54788d',
+    cityTop: '#87adc0',
+    cityEdge: '#e9b949',
+    cityEdge2: '#62b46a',
+    windowA: '#ffe28a',
+    windowB: '#ffc857',
+    foliage: '#4faf56',
+    foliage2: '#7ed957',
+    groundBody: '#6b4f2a',
+    groundTop: '#62c462',
+    groundEdge: '#f2e6a0',
+    platformBody: '#b08968',
+    platformTop: '#e6d5b8',
+    warn: '#e76f51',
+    monster: '#e07a5f',
+    monsterDark: '#5b3a2e',
+    monsterEye: '#fff4d6',
+    portal: '#ffb703',
+    portal2: '#2a9d8f',
     planetX: 0.80,
-    planetY: 0.795
+    planetY: 0.80,
+    stars: 0,
+    cloud: 1
   },
   {
-    id: 'holo-garden',
-    name: 'HOLO GARDEN',
-    subtitle: 'BIODOME HOLO',
+    id: 'candy-clouds',
+    name: 'CANDY CLOUDS',
+    subtitle: 'AWAN PERMEN',
     code: '02',
-    accent: '#5cffb1',
-    accent2: '#ff5ee7',
-    skyTop: '#010a08',
-    skyMid: '#062c23',
-    skyBottom: '#24104a',
-    fog: '#04130f',
-    cityBody: '#082019',
-    cityTop: '#104033',
-    cityEdge: '#58ffb0',
-    cityEdge2: '#ff72e6',
-    windowA: '#8affcc',
-    windowB: '#ffa6f3',
-    groundBody: '#071b15',
-    groundTop: '#0e382b',
-    groundEdge: '#4dffad',
-    platformBody: '#061711',
-    platformTop: '#0c3024',
-    warn: '#ff5b8f',
-    monster: '#ff66d8',
-    monsterDark: '#10302a',
-    monsterEye: '#d8fff1',
-    portal: '#ff5ee7',
-    portal2: '#5cffb1',
-    planetX: 0.77,
-    planetY: 0.79
-  },
-  {
-    id: 'solar-district',
-    name: 'SOLAR DISTRICT',
-    subtitle: 'STASIUN SURYA',
-    code: '03',
-    accent: '#ffb347',
-    accent2: '#ff3d8b',
-    skyTop: '#0c0206',
-    skyMid: '#3b0b1b',
-    skyBottom: '#7b2b16',
-    fog: '#1c0609',
-    cityBody: '#2a0c13',
-    cityTop: '#521b26',
-    cityEdge: '#ffc14f',
-    cityEdge2: '#ff4d92',
-    windowA: '#ffe08a',
-    windowB: '#ff8bb8',
-    groundBody: '#1c0910',
-    groundTop: '#3a1520',
-    groundEdge: '#ffb74a',
-    platformBody: '#1a070c',
-    platformTop: '#351119',
-    warn: '#ff4545',
-    monster: '#ff5a4d',
-    monsterDark: '#3a0c0c',
-    monsterEye: '#ffe7a8',
-    portal: '#ff3d8b',
-    portal2: '#ffb347',
-    planetX: 0.81,
-    planetY: 0.74
-  },
-  {
-    id: 'cryo-core',
-    name: 'CRYO CORE',
-    subtitle: 'INTI KRIOGENIK',
-    code: '04',
-    accent: '#8be9fd',
-    accent2: '#8a7dff',
-    skyTop: '#010716',
-    skyMid: '#062145',
-    skyBottom: '#123e63',
-    fog: '#04101e',
-    cityBody: '#081c33',
-    cityTop: '#123754',
-    cityEdge: '#9cf3ff',
-    cityEdge2: '#9a8dff',
-    windowA: '#c4f8ff',
-    windowB: '#b8b1ff',
-    groundBody: '#071b2b',
-    groundTop: '#10354c',
-    groundEdge: '#8be9fd',
-    platformBody: '#071625',
-    platformTop: '#0d2c42',
-    warn: '#ff4f86',
-    monster: '#78d7ff',
-    monsterDark: '#102b45',
+    accent: '#ff8fab',
+    accent2: '#6ec6ff',
+    skyTop: '#bfe3ff',
+    skyMid: '#ffd1e3',
+    skyBottom: '#fff4ea',
+    fog: '#ffe3ee',
+    cityBody: '#836396',
+    cityTop: '#b58cc8',
+    cityEdge: '#ffc2d1',
+    cityEdge2: '#a2d2ff',
+    windowA: '#fff1c9',
+    windowB: '#ffd4e8',
+    foliage: '#ff9ec4',
+    foliage2: '#ffc2d1',
+    groundBody: '#8d6a9f',
+    groundTop: '#ffc2d1',
+    groundEdge: '#fff0b3',
+    platformBody: '#c58fa3',
+    platformTop: '#ffd6e0',
+    warn: '#ff6b81',
+    monster: '#ffafcc',
+    monsterDark: '#6d3b5a',
     monsterEye: '#ffffff',
-    portal: '#8a7dff',
-    portal2: '#8be9fd',
+    portal: '#ff8fab',
+    portal2: '#7ec8e3',
+    planetX: 0.78,
+    planetY: 0.80,
+    stars: 0.05,
+    cloud: 1
+  },
+  {
+    id: 'golden-autumn',
+    name: 'GOLDEN AUTUMN',
+    subtitle: 'MUSIM EMAS',
+    code: '03',
+    accent: '#e76f51',
+    accent2: '#ffb703',
+    skyTop: '#f6bd60',
+    skyMid: '#f7a072',
+    skyBottom: '#ffe8c2',
+    fog: '#ecc9a3',
+    cityBody: '#6f4a39',
+    cityTop: '#9d6b52',
+    cityEdge: '#ffd166',
+    cityEdge2: '#f4a261',
+    windowA: '#ffd98a',
+    windowB: '#ffb703',
+    foliage: '#d97706',
+    foliage2: '#f4a261',
+    groundBody: '#6f4e37',
+    groundTop: '#d4a373',
+    groundEdge: '#f4e285',
+    platformBody: '#8d6748',
+    platformTop: '#d4a373',
+    warn: '#e76f51',
+    monster: '#e76f51',
+    monsterDark: '#5a2a27',
+    monsterEye: '#ffe8d6',
+    portal: '#ffb703',
+    portal2: '#e76f51',
+    planetX: 0.80,
+    planetY: 0.74,
+    stars: 0.15,
+    cloud: 0.55
+  },
+  {
+    id: 'snowy-town',
+    name: 'SNOWY TOWN',
+    subtitle: 'KOTA SALJU',
+    code: '04',
+    accent: '#7ec8e3',
+    accent2: '#b8b8ff',
+    skyTop: '#a9d6e5',
+    skyMid: '#d6eaf8',
+    skyBottom: '#f7fbff',
+    fog: '#dcecf7',
+    cityBody: '#4f7186',
+    cityTop: '#82a9bf',
+    cityEdge: '#e0f7ff',
+    cityEdge2: '#b8c0ff',
+    windowA: '#fff3b0',
+    windowB: '#dff4ff',
+    foliage: '#eaf6ff',
+    foliage2: '#bfe3f5',
+    groundBody: '#5c7a8a',
+    groundTop: '#f4fbff',
+    groundEdge: '#c8f0ff',
+    platformBody: '#6b8fa3',
+    platformTop: '#eaf6ff',
+    warn: '#ff7b9c',
+    monster: '#8ecae6',
+    monsterDark: '#2b4c5c',
+    monsterEye: '#ffffff',
+    portal: '#b8c0ff',
+    portal2: '#7ec8e3',
     planetX: 0.82,
-    planetY: 0.80
+    planetY: 0.80,
+    stars: 0.30,
+    cloud: 0.35
   }
 ];
 
 const COLOR_FIELDS = [
   'skyTop','skyMid','skyBottom','fog','cityBody','cityTop','cityEdge','cityEdge2',
   'windowA','windowB','groundBody','groundTop','groundEdge','platformBody',
-  'platformTop','warn','monster','monsterDark','monsterEye','portal','portal2'
+  'platformTop','warn','monster','monsterDark','monsterEye','portal','portal2',
+  'foliage','foliage2'
 ];
 
 const THEMES = THEME_DEFS.map(def => {
@@ -2113,23 +2132,39 @@ function buildCity(sb, nb, theme, cfg, levelIndex, themeIndex, rand) {
     const d = 130 + rand() * 260;
     const z = -780 - rand() * 1500;
     const base = -280;
-    const height = 260 + rand() * 940;
+    const height = 200 + rand() * 560;
     const top = base + height;
     const cx = x + w / 2;
     const frontZ = z + d / 2;
 
     let tint = rgbMix(theme.cityBody, theme.cityTop, 0.35 + rand() * 0.5);
     tint = rgbMix(tint, theme.cityEdge, 0.055);
-    sb.box(cx, (base + top) / 2, z, w, height, d, tint, 0, rgbMix(tint, theme.cityEdge, 0.10));
+    tint = rgbMix(tint, rand() > 0.55 ? theme.accentRgb : theme.cityTop, 0.10);
+    sb.box(cx, (base + top) / 2, z, w, height, d, tint, 0.12, rgbMix(tint, theme.cityEdge, 0.10));
+
+    // simple floor ledges give the blocks scale without holographic panels
+    for (let fy = base + 48; fy < top - 26; fy += 74) {
+      sb.box(cx, fy, frontZ + 2.0, w * 0.94, 2.2, 2.4, rgbScale(tint, 0.80), 0.08);
+    }
 
     // roof cap
     sb.box(cx, top + 3, z, w * 0.94, 6, d * 0.94, rgbMix(tint, theme.cityEdge, 0.16), 0.08);
 
+    // cheerful street-level awning
+    if (rand() > 0.58) {
+      const ay = 26 + rand() * 76;
+      const aw = w * (0.28 + rand() * 0.24);
+      sb.box(cx + (rand() - 0.5) * w * 0.24, ay, frontZ + 5, aw, 5, 12,
+        rand() > 0.5 ? theme.accentRgb : theme.cityEdge2, 0.04);
+      sb.box(cx + (rand() - 0.5) * w * 0.24, ay - 5, frontZ + 5, aw * 0.72, 2, 12,
+        [0.96, 0.95, 0.90], 0.02);
+    }
+
     // vertical neon corners
     const edgeColor = rand() > 0.72 ? theme.cityEdge2 : theme.cityEdge;
-    nb.box(cx - w / 2 + 2, (base + top) / 2, frontZ + 1.2, 2.2, height, 2.2, edgeColor, 0.52);
-    nb.box(cx + w / 2 - 2, (base + top) / 2, frontZ + 1.2, 2.2, height, 2.2, edgeColor, 0.28);
-    nb.box(cx, top + 1, frontZ + 1.2, w * 0.92, 2.4, 2.4, edgeColor, 0.72);
+    nb.box(cx - w / 2 + 2, (base + top) / 2, frontZ + 1.2, 2.2, height, 2.2, edgeColor, 0.20);
+    nb.box(cx + w / 2 - 2, (base + top) / 2, frontZ + 1.2, 2.2, height, 2.2, edgeColor, 0.10);
+    nb.box(cx, top + 1, frontZ + 1.2, w * 0.92, 2.4, 2.4, edgeColor, 0.32);
 
     // lit windows on the front face
     const cols = Math.min(6, Math.max(2, Math.floor(w / 44)));
@@ -2144,35 +2179,22 @@ function buildCity(sb, nb, theme, cfg, levelIndex, themeIndex, rand) {
         const wy = base + cellH * (ry + 0.5);
         const ww = Math.min(18, cellW * 0.46);
         const wh = Math.min(9, cellH * 0.24);
-        nb.box(wx, wy, frontZ + 1.8, ww, wh, 1.2, winColor, 0.30 + rand() * 0.55);
+        nb.box(wx, wy, frontZ + 1.8, ww, wh, 1.2, winColor, 0.18 + rand() * 0.32);
       }
     }
 
-    // horizontal holo band / antenna
-    if (rand() > 0.63) {
-      nb.box(cx, base + height * (0.45 + rand() * 0.35), frontZ + 2, w * 0.82, 3, 2, theme.cityEdge2, 0.34);
-    }
-    if (rand() > 0.58) {
-      const antH = 40 + rand() * 130;
-      sb.box(cx + (rand() - 0.5) * w * 0.45, top + antH / 2, z, 3, antH, 3, rgbMix(tint, theme.cityEdge, 0.1), 0.1);
+    // a few simple rooftop chimneys instead of holographic billboards
+    if (rand() > 0.62) {
+      const chH = 18 + rand() * 36;
+      sb.box(cx + (rand() - 0.5) * w * 0.45, top + chH / 2, z, 9, chH, 9, rgbMix(tint, theme.cityEdge, 0.05), 0.05);
       scene.cityLights.push({
         x: cx + (rand() - 0.5) * w * 0.45,
-        y: top + antH,
+        y: top + chH,
         z: z,
-        size: 10 + rand() * 12,
+        size: 5 + rand() * 5,
         color: rand() > 0.5 ? theme.cityEdge : theme.cityEdge2,
         phase: rand() * 6.28
       });
-    }
-
-    // occasional giant holographic billboard frame
-    if (rand() > 0.82) {
-      const by = base + height * 0.7;
-      const bw = w * 0.66;
-      nb.box(cx, by, frontZ + 3, bw, 4, 2.5, theme.cityEdge, 0.75);
-      nb.box(cx, by - 24, frontZ + 3, bw, 4, 2.5, theme.cityEdge2, 0.55);
-      nb.box(cx - bw / 2, by - 12, frontZ + 3, 4, 28, 2.5, theme.cityEdge, 0.55);
-      nb.box(cx + bw / 2, by - 12, frontZ + 3, 4, 28, 2.5, theme.cityEdge, 0.55);
     }
 
     x += w + 34 + rand() * 110;
@@ -2181,11 +2203,11 @@ function buildCity(sb, nb, theme, cfg, levelIndex, themeIndex, rand) {
   // far silhouette layer for depth
   for (let i = 0; i < 26; i++) {
     const fw = 180 + rand() * 420;
-    const fh = 320 + rand() * 720;
+    const fh = 260 + rand() * 560;
     const fz = -1950 - rand() * 800;
     const fx = start + rand() * (end - start);
     sb.box(fx, -280 + fh / 2, fz, fw, fh, 110, theme.cityFar, 0, rgbMix(theme.cityFar, theme.cityEdge, 0.03));
-    nb.box(fx, -280 + fh + 1, fz + 58, fw * 0.94, 2.2, 2.2, theme.cityEdge, 0.18);
+    nb.box(fx, -280 + fh + 1, fz + 58, fw * 0.94, 2.2, 2.2, theme.cityEdge, 0.08);
   }
 }
 
@@ -2202,43 +2224,22 @@ function buildLevelGeometry(sb, nb, theme, cfg, levelIndex, rand) {
     sb.box(cx, -35, 0, w, 70, 150, theme.groundBody, 0, theme.groundTop);
     sb.box(cx, -2.2, 0, w, 4.4, 152, theme.groundTop, 0.08);
 
-    // top edge neon rail
-    nb.box(cx, 2.4, 76.5, w, 4.2, 2.4, theme.groundEdge, 0.78);
-    nb.box(cx, -17, 76.5, w, 1.2, 1.2, theme.groundEdge, 0.18);
-
-    // front panel seams
-    const seamStep = TILE * 2;
-    for (let gx = run[0] + seamStep; gx < run[1]; gx += seamStep) {
-      nb.box(gx * WORLD_S, -35, 76.6, 1.5, 58, 1.2, theme.groundEdge, 0.11);
-    }
-
-    // holographic grid on top
-    for (let z = -55; z <= 55; z += 27.5) {
-      nb.box(cx, 1.1, z, w, 0.8, 1.2, theme.groundEdge, 0.13);
-    }
-    for (let gx = run[0]; gx < run[1]; gx += TILE * 2) {
-      nb.box(gx * WORLD_S, 1.1, -55, 1.0, 0.8, 110, theme.groundEdge, 0.10);
-    }
-
-    // glowing platform support fins beneath the ground edge
-    if (runIndex % 2 === 0) {
-      scene.platformLights.push({
-        x: cx, y: -36, z: 52, size: 26, color: theme.groundEdge, phase: rand() * 6.28
-      });
-    }
+    // soft grass/stone edge trim
+    nb.box(cx, 2.4, 76.5, w, 4.2, 2.4, theme.groundEdge, 0.32);
+    nb.box(cx, -17, 76.5, w, 1.2, 1.2, theme.groundEdge, 0.08);
   });
 
   cfg.pits.forEach(pit => {
     const left = pit.x * WORLD_S;
     const right = (pit.x + pit.w) * WORLD_S;
     [left, right].forEach(px => {
-      nb.box(px, -33, 76.5, 3.4, 66, 3.4, theme.warn, 0.55);
-      nb.box(px, 2.2, 76.5, 9, 2.6, 3.4, theme.warn, 0.9);
+      nb.box(px, -33, 76.5, 3.4, 66, 3.4, theme.warn, 0.32);
+      nb.box(px, 2.2, 76.5, 9, 2.6, 3.4, theme.warn, 0.55);
       queueStaticPitLight(px, theme);
     });
     // warning chevrons along the lip
     for (let i = 0; i < 2; i++) {
-      nb.box(left + (i + 0.5) * (right - left) / 2, 3, 77, 7, 2, 1.5, theme.warn, 0.55);
+      nb.box(left + (i + 0.5) * (right - left) / 2, 3, 77, 7, 2, 1.5, theme.warn, 0.30);
     }
   });
 
@@ -2250,16 +2251,16 @@ function buildLevelGeometry(sb, nb, theme, cfg, levelIndex, rand) {
     sb.box(cx, top - 33, 0, w, 66, 130, theme.platformBody, 0, theme.platformTop);
     sb.box(cx, top - 2.5, 0, w - 6, 5, 124, theme.platformTop, 0.05);
 
-    nb.box(cx, top - 0.5, 65.5, w, 3.6, 2.4, theme.accentRgb, 0.9);
-    nb.box(cx - w / 2 + 2, top - 1, 0, 2.4, 3.4, 130, theme.accent2Rgb, 0.55);
-    nb.box(cx + w / 2 - 2, top - 1, 0, 2.4, 3.4, 130, theme.accent2Rgb, 0.55);
-    nb.box(cx, top - 62, 65.5, w * 0.9, 1.8, 1.8, theme.accent2Rgb, 0.45);
+    nb.box(cx, top - 0.5, 65.5, w, 3.6, 2.4, theme.accentRgb, 0.55);
+    nb.box(cx - w / 2 + 2, top - 1, 0, 2.4, 3.4, 130, theme.accent2Rgb, 0.24);
+    nb.box(cx + w / 2 - 2, top - 1, 0, 2.4, 3.4, 130, theme.accent2Rgb, 0.24);
+    nb.box(cx, top - 62, 65.5, w * 0.9, 1.8, 1.8, theme.accent2Rgb, 0.16);
 
-    // vertical support glow under each platform
+    // subtle vertical support seams under each platform
     const supports = Math.max(1, Math.floor(p.w / 32));
     for (let s = 0; s < supports; s++) {
       const sx = cx - w / 2 + (s + 0.5) * w / supports;
-      nb.box(sx, top - 32, 64.5, 1.5, 58, 1.2, theme.accentRgb, 0.18);
+      nb.box(sx, top - 32, 64.5, 1.5, 58, 1.2, theme.accentRgb, 0.06);
     }
 
     scene.platformLights.push({
@@ -2270,38 +2271,55 @@ function buildLevelGeometry(sb, nb, theme, cfg, levelIndex, rand) {
     });
   });
 
-  // floating neon data cubes
-  for (let i = 0; i < 28; i++) {
-    const gx = 90 + rand() * (cfg.width - 180);
-    const y = 220 + rand() * 420;
-    const z = -170 - rand() * 520;
-    const s = 4 + rand() * 8;
-    const col = rand() > 0.5 ? theme.accentRgb : theme.accent2Rgb;
-    nb.box(gx * WORLD_S, y, z, s, s, s, col, 0.30);
-    if (i % 3 === 0) {
-      scene.platformLights.push({ x: gx * WORLD_S, y, z, size: s * 3, color: col, phase: rand() * 6.28 });
-    }
-  }
-
   // goal pad + portal pylons
   const portalX = (goal.x + goal.w / 2) * WORLD_S;
   const portalY = gameToWorldY(goal.y + goal.h / 2);
   scene.portal = { x: portalX, y: portalY, z: 0 };
 
   sb.box(portalX, -4, 0, 196, 8, 170, theme.platformBody, 0, theme.platformTop);
-  nb.box(portalX, 1.5, 86, 190, 3.4, 2.6, theme.portal2, 0.9);
-  nb.box(portalX, -2, 86, 150, 1.2, 2.0, theme.portal, 0.35);
+  nb.box(portalX, 1.5, 86, 190, 3.4, 2.6, theme.portal2, 0.55);
+  nb.box(portalX, -2, 86, 150, 1.2, 2.0, theme.portal, 0.20);
 
   [-88, 88].forEach(dx => {
     sb.box(portalX + dx, 95, 0, 12, 190, 12, theme.platformBody, 0, theme.platformTop);
-    nb.box(portalX + dx, 95, 6.5, 3, 178, 3, theme.portal2, 0.55);
-    nb.box(portalX + dx, 188, 0, 16, 4, 16, theme.portal, 0.7);
+    nb.box(portalX + dx, 95, 6.5, 3, 178, 3, theme.portal2, 0.25);
+    nb.box(portalX + dx, 188, 0, 16, 4, 16, theme.portal, 0.40);
   });
 
   scene.platformLights.push({
     x: portalX, y: portalY, z: 30,
     size: 130, color: theme.portal, phase: 0
   });
+}
+
+function buildScenery(sb, nb, theme, cfg, rand) {
+  const width = cfg.width * WORLD_S;
+  const trunk = [0.28, 0.17, 0.09];
+
+  // friendly low-poly park trees behind the platform route
+  for (let x = 160; x < width - 120; x += 205) {
+    const z = -245 - rand() * 210;
+    const s = 0.75 + rand() * 0.65;
+    sb.box(x, 31 * s, z, 12 * s, 62 * s, 12 * s, trunk, 0);
+    sb.box(x, 100 * s, z, 78 * s, 68 * s, 66 * s, theme.foliage, 0.01);
+    sb.box(x - 34 * s, 82 * s, z + 4, 46 * s, 46 * s, 44 * s, theme.foliage2, 0.01);
+    sb.box(x + 34 * s, 86 * s, z - 4, 43 * s, 43 * s, 42 * s, theme.foliage, 0.01);
+  }
+
+  // bushes and tiny flowers along the back edge of the walkable ground
+  for (let x = 95; x < width - 55; x += 145) {
+    if (rand() > 0.66 || isPitAt(x / WORLD_S, cfg)) continue;
+    const z = -57 - rand() * 10;
+    const s = 0.65 + rand() * 0.7;
+    sb.box(x, 4 * s, z, 24 * s, 10 * s, 18 * s, theme.foliage, 0.01);
+    sb.box(x + 13 * s, 3.5 * s, z + 2, 17 * s, 8 * s, 16 * s, theme.foliage2, 0.01);
+
+    if (rand() > 0.45) {
+      sb.box(x + 20 * s, 8 * s, z + 4, 1.6, 9, 1.6, [0.25, 0.55, 0.22], 0);
+      sb.box(x + 20 * s, 13 * s, z + 4, 5.5, 4.5, 5.5, theme.accentRgb, 0.05);
+      sb.box(x + 20 * s, 13 * s, z + 4, 2.5, 5.5, 2.5, theme.accent2Rgb, 0.05);
+    }
+  }
 }
 
 const _pitLights = [];
@@ -2311,25 +2329,20 @@ function queueStaticPitLight(x, theme) {
 
 function buildAbyss(sb, nb, theme, cfg) {
   const width = cfg.width * WORLD_S;
-  sb.box(width / 2, -390, -430, width + 2200, 12, 2600, theme.fog, 0, rgbMix(theme.fog, theme.cityEdge, 0.04));
-  for (let x = -400; x < width + 400; x += 240) {
-    nb.box(x, -382, -430, 2, 1, 2500, theme.cityEdge, 0.028);
-  }
-  for (let z = -1500; z < 650; z += 240) {
-    nb.box(width / 2, -382, z, width + 1800, 1, 2, theme.cityEdge2, 0.024);
-  }
+  const depthColor = rgbMix(theme.groundBody, [0.03, 0.04, 0.06], 0.62);
+  sb.box(width / 2, -390, -430, width + 2200, 12, 2600, depthColor, 0, depthColor);
 }
 
 function generateCars(theme, cfg, rand) {
   const width = cfg.width * WORLD_S;
   const cars = [];
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 6; i++) {
     cars.push({
       x: rand() * (width + 500) - 250,
-      y: 170 + rand() * 620,
-      z: -340 - rand() * 980,
-      speed: (rand() > 0.48 ? 1 : -1) * (35 + rand() * 115),
-      size: 5 + rand() * 7,
+      y: 220 + rand() * 480,
+      z: -520 - rand() * 760,
+      speed: (rand() > 0.48 ? 1 : -1) * (24 + rand() * 48),
+      size: 4 + rand() * 5,
       color: rand() > 0.45 ? theme.accentRgb : theme.accent2Rgb,
       phase: rand() * 6.28
     });
@@ -2370,6 +2383,7 @@ function buildStaticScene(levelIndex, themeIndex) {
 
   buildCity(sb, nb, theme, cfg, levelIndex, themeIndex, rand);
   buildLevelGeometry(sb, nb, theme, cfg, levelIndex, rand);
+  buildScenery(sb, nb, theme, cfg, rand);
   buildAbyss(sb, nb, theme, cfg);
 
   // pit marker glows (these are static world points)
@@ -2795,9 +2809,9 @@ function completeLevel() {
     gameState = STATE_GAMEOVER;
     document.getElementById('finalTitle').textContent = 'MISI SELESAI!';
     document.getElementById('finalTitle').style.color = 'var(--a)';
-    document.getElementById('finalSub').textContent = `Semua ${LEVELS.length} sektor berhasil ditembus. Kamu menguasai kota neon!`;
+    document.getElementById('finalSub').textContent = `Semua ${LEVELS.length} dunia berhasil ditembus. Petualangan warnamu selesai!`;
     document.getElementById('finalScore').textContent = String(score).padStart(6, '0');
-    document.getElementById('finalLevel').textContent = `SECTOR 0${currentLevel}`;
+    document.getElementById('finalLevel').textContent = `WORLD 0${currentLevel}`;
     document.getElementById('finalCoins').textContent = `${coins} KOIN`;
     showScreen('gameoverScreen');
     saveScore(score);
@@ -2805,10 +2819,10 @@ function completeLevel() {
   }
 
   gameState = STATE_LEVELCLEAR;
-  document.getElementById('levelClearTitle').textContent = `SECTOR ${String(currentLevel).padStart(2, '0')} CLEARED`;
+  document.getElementById('levelClearTitle').textContent = `WORLD ${String(currentLevel).padStart(2, '0')} SELESAI`;
   document.getElementById('levelClearInfo').textContent =
     `${theme.name} · ${theme.subtitle} — BONUS +${bonus} · SKOR ${score}`;
-  document.getElementById('btnNextLevel').textContent = `Lanjut ke Sector ${String(currentLevel + 1).padStart(2, '0')}`;
+  document.getElementById('btnNextLevel').textContent = `Lanjut ke World ${String(currentLevel + 1).padStart(2, '0')}`;
   showScreen('levelClearScreen');
 }
 
@@ -2845,7 +2859,7 @@ function killPlayer() {
     document.getElementById('finalTitle').style.color = '#ff4d6d';
     document.getElementById('finalSub').textContent = 'Portal belum tercapai. Perbaiki lompatan dan coba lagi.';
     document.getElementById('finalScore').textContent = String(score).padStart(6, '0');
-    document.getElementById('finalLevel').textContent = `SECTOR 0${currentLevel}`;
+    document.getElementById('finalLevel').textContent = `WORLD 0${currentLevel}`;
     document.getElementById('finalCoins').textContent = `${coins} KOIN`;
     showScreen('gameoverScreen');
     sfxGameOver();
@@ -3075,6 +3089,8 @@ function drawSky(theme) {
   gl.uniform3fv(skyU.uAccent, theme.accentRgb);
   gl.uniform3fv(skyU.uAccent2, theme.accent2Rgb);
   gl.uniform2f(skyU.uPlanet, theme.planetX, theme.planetY);
+  gl.uniform1f(skyU.uStars, theme.stars);
+  gl.uniform1f(skyU.uCloud, theme.cloud);
   gl.bindBuffer(gl.ARRAY_BUFFER, skyQuad);
   disableAttribsExcept([skyAttr.pos]);
   gl.enableVertexAttribArray(skyAttr.pos);
@@ -3395,43 +3411,37 @@ function drawPlayer(theme) {
   const H = _groupB;
 
   drawCharacterPart(MESH.sphere, PC.skin, 0.02, H, 0, 0, 0, 0, 0, 0, 25.5, 24.5, 23);
-  drawCharacterPart(MESH.sphere, PC.skin, 0.02, H, -24, -1, 0, 0, 0, 0, 6.4, 7.6, 5.4);
-  drawCharacterPart(MESH.sphere, PC.skin, 0.02, H, 24, -1, 0, 0, 0, 0, 6.4, 7.6, 5.4);
   drawCharacterPart(MESH.sphere, PC.skinLight, 0.04, H, 0, -3, 24.5, 0, 0, 0, 7.4, 6.5, 7.8);
 
-  // profile eye, brow and mouth on each side (only the camera-side pair is visible)
-  [-1, 1].forEach(side => {
-    const ex = side * 24.4;
-    drawCharacterPart(MESH.sphere, PC.white, 0.04, H, ex, 6, 5.5, 0, 0, 0, 2.7, 5.8, 4.7);
-    drawCharacterPart(MESH.sphere, PC.eye, 0.25, H, ex + side * 2.35, 6, 5.5, 0, 0, 0, 1.3, 2.5, 1.9);
-    drawCharacterPart(MESH.box, PC.brownDark, 0.02, H, ex + side * 0.5, 12.2, 6.0, 0, 0, 0, 1.2, 2.0, 6.2);
-    drawCharacterPart(MESH.box, PC.brownDark, 0.02, H, ex + side * 0.4, -14.5, 6.0, 0, 0, 0, 1.1, 1.5, 5.6);
-    drawCharacterPart(MESH.sphere, PC.brownDark, 0.02, H, ex + side * 0.2, -9.2, 6.4, 0, 0, 0, 2.2, 4.2, 6.2);
-  });
+  // Exactly one face on the camera-facing side. The far side gets no
+  // duplicate eye/mouth so the profile never reads as two faces.
+  const faceSide = -player.dir;
+  drawCharacterPart(MESH.sphere, PC.skin, 0.02, H, faceSide * 24, -1, 0, 0, 0, 0, 6.4, 7.6, 5.4);
 
-  // moustache + front mouth
-  [-7.2, 7.2].forEach(mx => {
-    drawCharacterPart(MESH.sphere, PC.brownDark, 0.02, H, mx, -10, 24.0, 0, 0, mx < 0 ? -0.22 : 0.22, 8.9, 4.5, 5.5);
-  });
-  drawCharacterPart(MESH.box, PC.brownDark, 0.02, H, 0, -14.5, 22.2, 0, 0, 0, 13, 1.8, 1.2);
-  drawCharacterPart(MESH.box, PC.brown, 0.02, H, -20, -4, 8, 0, 0, 0, 5, 10, 5);
-  drawCharacterPart(MESH.box, PC.brown, 0.02, H, 20, -4, 8, 0, 0, 0, 5, 10, 5);
+  const ex = faceSide * 21.8;
+  const ez = 12;
+  drawCharacterPart(MESH.sphere, PC.white, 0.04, H, ex, 6, ez, 0, 0, 0, 2.7, 5.8, 4.7);
+  drawCharacterPart(MESH.sphere, PC.eye, 0.25, H, ex + faceSide * 2.35, 6, ez, 0, 0, 0, 1.3, 2.5, 1.9);
+  drawCharacterPart(MESH.box, PC.brownDark, 0.02, H, ex + faceSide * 0.35, 12.2, ez + 0.5, 0, 0, 0, 1.2, 2.0, 6.2);
+
+  // one moustache, one mouth, one sideburn
+  drawCharacterPart(MESH.sphere, PC.brownDark, 0.02, H, faceSide * 17.6, -9.4, 18.2, 0, 0, 0, 8.4, 4.3, 7.2);
+  drawCharacterPart(MESH.box, PC.brownDark, 0.02, H, faceSide * 20.0, -14.2, 15.5, 0, 0, 0, 1.15, 1.6, 5.8);
+  drawCharacterPart(MESH.box, PC.brown, 0.02, H, faceSide * 23.5, -4, 8, 0, 0, 0, 5, 10, 5);
 
   // cap dome + brim
   drawCharacterPart(MESH.sphere, PC.red, 0.16, H, 0, 17, -1, 0, 0, 0, 29, 15, 28);
   drawCharacterPart(MESH.box, PC.red, 0.12, H, 0, 8.5, 27, 0, 0, 0, 46, 4, 19);
   drawCharacterPart(MESH.box, PC.redDark, 0.05, H, 0, 6.8, 28, 0, 0, 0, 46, 1.5, 18);
 
-  // side cap badges, readable when the plumber faces left/right
-  [-1, 1].forEach(side => {
-    const bx = side * 29.4;
-    drawCharacterPart(MESH.cylinder, PC.white, 0.16, H, bx, 18, 0, 0, 0, side > 0 ? -Math.PI / 2 : Math.PI / 2, 7.2, 1.4, 7.2);
-    const ox = side * 30.5;
-    drawCharacterPart(MESH.box, PC.red, 0.12, H, ox, 18, -2.2, 0, 0, 0, 0.9, 7.2, 1.5);
-    drawCharacterPart(MESH.box, PC.red, 0.12, H, ox, 18, 2.2, 0, 0, 0, 0.9, 7.2, 1.5);
-    drawCharacterPart(MESH.box, PC.red, 0.12, H, ox, 18, 0, 0.55, 0, 0, 0.9, 6.4, 1.3);
-    drawCharacterPart(MESH.box, PC.red, 0.12, H, ox, 18, 0, -0.55, 0, 0, 0.9, 6.4, 1.3);
-  });
+  // one side cap badge on the visible side
+  const bx = faceSide * 29.4;
+  drawCharacterPart(MESH.cylinder, PC.white, 0.16, H, bx, 18, 0, 0, 0, faceSide > 0 ? -Math.PI / 2 : Math.PI / 2, 7.2, 1.4, 7.2);
+  const ox = faceSide * 30.5;
+  drawCharacterPart(MESH.box, PC.red, 0.12, H, ox, 18, -2.2, 0, 0, 0, 0.9, 7.2, 1.5);
+  drawCharacterPart(MESH.box, PC.red, 0.12, H, ox, 18, 2.2, 0, 0, 0, 0.9, 7.2, 1.5);
+  drawCharacterPart(MESH.box, PC.red, 0.12, H, ox, 18, 0, 0.55, 0, 0, 0.9, 6.4, 1.3);
+  drawCharacterPart(MESH.box, PC.red, 0.12, H, ox, 18, 0, -0.55, 0, 0, 0.9, 6.4, 1.3);
 
   // little flag accessory just above the cap
   drawCharacterPart(MESH.cylinder, PC.gold, 0.35, H, 0, 39, 0, 0, 0, 0, 1.0, 14, 1.0);
@@ -3525,32 +3535,32 @@ function drawParticles3D(theme) {
 function drawAtmosphereGlows(theme) {
   if (!scene) return;
   const camCx = (cameraX + INTERNAL_W / 2) * WORLD_S;
-  queueGlow(camCx, 260, -1880, 760, theme.accentRgb, 0.050);
-  queueGlow(camCx + 260, 150, -1450, 420, theme.accent2Rgb, 0.045);
-  queueGlow(camCx - 330, 210, -1580, 500, theme.accentRgb, 0.035);
+  queueGlow(camCx, 260, -1880, 760, theme.accentRgb, 0.025);
+  queueGlow(camCx + 260, 150, -1450, 420, theme.accent2Rgb, 0.020);
+  queueGlow(camCx - 330, 210, -1580, 500, theme.accentRgb, 0.015);
 
-  // ambient holographic motes
+  // soft floating pollen / dust motes
   const span = 1250;
-  for (let i = 0; i < 28; i++) {
-    const wx = camCx - span / 2 + ((i * 211.7 + visualTime * (7 + (i % 5) * 3)) % span);
-    const wy = 55 + ((i * 137.3 + Math.sin(visualTime * 0.45 + i) * 34) % 430);
-    const wz = -150 - (i % 6) * 100;
-    queueGlow(wx, wy, wz, 2.4 + (i % 3), i % 2 ? theme.accentRgb : theme.accent2Rgb, 0.18);
+  for (let i = 0; i < 14; i++) {
+    const wx = camCx - span / 2 + ((i * 211.7 + visualTime * (5 + (i % 5) * 2)) % span);
+    const wy = 55 + ((i * 137.3 + Math.sin(visualTime * 0.4 + i) * 28) % 430);
+    const wz = -180 - (i % 6) * 100;
+    queueGlow(wx, wy, wz, 2.0 + (i % 3), i % 2 ? theme.accentRgb : theme.accent2Rgb, 0.10);
   }
 
-  scene.platformLights.forEach((l, i) => {
+  scene.platformLights.forEach((l) => {
     const pulse = 0.55 + 0.45 * Math.sin(visualTime * 1.8 + l.phase);
-    queueGlow(l.x, l.y, l.z, l.size * (0.85 + pulse * 0.25), l.color, 0.10 + pulse * 0.16);
+    queueGlow(l.x, l.y, l.z, l.size * (0.85 + pulse * 0.25), l.color, 0.06 + pulse * 0.10);
   });
-  scene.cityLights.forEach((l, i) => {
+  scene.cityLights.forEach((l) => {
     const pulse = 0.5 + 0.5 * Math.sin(visualTime * 2.3 + l.phase);
-    queueGlow(l.x, l.y, l.z, l.size * (1 + pulse * 0.5), l.color, 0.25 + pulse * 0.35);
+    queueGlow(l.x, l.y, l.z, l.size * (1 + pulse * 0.5), l.color, 0.12 + pulse * 0.18);
   });
   scene.cars.forEach(car => {
     const dir = car.speed > 0 ? 1 : -1;
-    queueGlow(car.x, car.y, car.z, car.size * 2.6, car.color, 0.8);
-    queueGlow(car.x - dir * car.size * 3.2, car.y, car.z, car.size * 1.6, car.color, 0.36);
-    queueGlow(car.x - dir * car.size * 6.0, car.y, car.z, car.size * 1.1, car.color, 0.18);
+    queueGlow(car.x, car.y, car.z, car.size * 2.4, car.color, 0.50);
+    queueGlow(car.x - dir * car.size * 3.2, car.y, car.z, car.size * 1.5, car.color, 0.20);
+    queueGlow(car.x - dir * car.size * 6.0, car.y, car.z, car.size * 1.1, car.color, 0.10);
   });
 }
 
@@ -3624,7 +3634,7 @@ function updateBoostHUD() {
 function showLevelBanner() {
   const theme = THEMES[LEVELS[currentLevel - 1].theme];
   const el = document.getElementById('levelBanner');
-  document.getElementById('lbKicker').textContent = `SECTOR ${String(currentLevel).padStart(2, '0')} // ${theme.code}`;
+  document.getElementById('lbKicker').textContent = `WORLD ${String(currentLevel).padStart(2, '0')} // ${theme.code}`;
   document.getElementById('lbTitle').textContent = theme.name;
   document.getElementById('lbSub').textContent = theme.subtitle;
   el.classList.remove('show');
@@ -3652,7 +3662,7 @@ function togglePause() {
   if (gameState === STATE_PLAYING && player.alive && !portalEntry.active && !portalEntry.done) {
     gameState = STATE_PAUSED;
     const theme = THEMES[LEVELS[currentLevel - 1].theme];
-    document.getElementById('pauseInfo').textContent = `SECTOR ${String(currentLevel).padStart(2, '0')} · ${theme.name} — SKOR ${score}`;
+    document.getElementById('pauseInfo').textContent = `WORLD ${String(currentLevel).padStart(2, '0')} · ${theme.name} — SKOR ${score}`;
     showScreen('pauseScreen');
     showPlayingUI(false);
     clearInputs();

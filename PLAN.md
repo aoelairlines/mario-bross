@@ -1,72 +1,81 @@
-# PLAN.md — Colorful 3D Arcade Game Roadmap (Untuk Siswa)
+# PLAN.md — Classic 2D Pixel Platformer Roadmap (Untuk Siswa)
 
-Dokumen ini adalah rencana kerja dan log perkembangan proyek game arcade 3D dalam 1 file `index.html`. Dokumen ini diperbarui setiap kali ada perubahan kode sebelum push ke GitHub.
+Dokumen ini adalah rencana kerja dan log perkembangan proyek game arcade 2D dalam 1 file `index.html`. Dokumen diperbarui setiap kali ada perubahan kode sebelum push ke GitHub.
 
 ---
 
 ## 1. Ikhtisar Game
 
-- **Judul Game**: Mario 3D Adventure
-- **Genre**: 3D Arcade Platformer (kamera 2.5D, geometri WebGL penuh)
+- **Judul Game**: Mario 2D Adventure
+- **Genre**: 2D Classic Pixel Platformer (side-scrolling, gaya 8-bit)
 - **Format**: Single-File HTML (`index.html`) tanpa dependensi eksternal
-- **Renderer**: Raw WebGL 1.0 — tanpa Three.js, tanpa library, tanpa file aset
-- **Karakter**: Plumber low-poly bergaya Mario (topi merah + emblem M, kumis, overall biru, sarung tangan putih) yang dibangun 100% dari primitif 3D prosedural, dengan **postur menghadap samping (profil)** dan **wajah tunggal di sisi kamera** agar tidak terlihat seperti dua muka
-- **Aksesori**: Bendera kecil di atas topi + bendera kemenangan besar di atas portal
-- **Tema Latar**: 4 dunia warna-warni yang lebih ramah dan tidak cyberpunk — Sunny Plaza, Candy Clouds, Golden Autumn, Snowy Town
-- **Portal & Flag**: Animasi karakter tersedot ke dimensi lain (kamera zoom, vortex, putaran, pengecilan, dan tembus bidang portal) sebelum layar level clear muncul
-- **Isi Dunia 3D**: Kota low-poly pastel, pepohonan dan semak, matahari lembut, langit cerah, platform batu/kayu, portal warna hangat, koin torus, drone musuh, bayangan, dan partikel halus
-- **Audio**: Web Audio API sintetis
+- **Renderer**: Canvas 2D murni, resolusi internal **320 × 240** (4:3), di-upscale dengan `image-rendering: pixelated`
+- **Karakter**: Plumber pixel-art 16 × 16 (small) / 16 × 28 (big), menghadap samping kiri/kanan, topi merah, kumis, overall biru, dan sepatu cokelat
+- **Dunia**: 4 world bertema klasik 2D — **Overworld, Underground, Sunset, Snowy Peaks**
+- **Elemen Visual**: langit biru, awan pixel, bukit dan semak hijau, tanah bata, pipa hijau, blok bata, blok tanya, koin berputar, mushroom, bintang, tiang bendera, dan kastil
+- **Item & Skor**:
+  - Koin: +100 poin dan menambah penghitung koin
+  - Blok tanya: mengeluarkan koin, mushroom, atau bintang
+  - Mushroom: +100 poin dan membuat karakter menjadi besar
+  - Bintang: +1000 poin, booster kecepatan, dan kebal (invincible) selama 10 detik
+  - Menginjak Goomba: +200 poin
+- **Goal**: mencapai tiang bendera di ujung world; bendera turun dan skor bonus waktu ditambahkan
+- **Nyawa & Waktu**: 3 nyawa, timer 300 detik per world, HUD klasik (SCORE / COINS / WORLD / TIME / LIVES)
+- **Audio**: Web Audio API sintetis — jump, koin, blok, power-up, bintang, stomp, hurt, death, flag, game over
 - **Penyimpanan**: LocalStorage (`arcade_leaderboard`, `arcade_last_username`)
 - **Kebijakan Caching**: Zero-Cache (`no-cache, no-store, must-revalidate`)
 - **Deployment**: GitHub Pages (Branch `master`, path `/`)
-- **Catatan IP**: Fan-made tribute. Seluruh model, tekstur, dan efek dibuat prosedural; tidak memakai aset resmi Nintendo.
+- **Catatan IP**: Fan-made tribute. Seluruh sprite, tile, dan efek digambar prosedural; tidak memakai aset resmi Nintendo.
 
 ---
 
-## 2. Fase Pengembangan Universal
+## 2. Fase Pengembangan
 
-### Phase 0: Brainstorming & Desain Game
-- [x] Menentukan ide & tema: platformer 3D warna-warni dengan karakter plumber bergaya Mario.
+### Phase 0: Brainstorming & Desain 2D
+- [x] Mengubah arah visual dari 3D futuristik menjadi **2D pixel-art klasik** seperti referensi Super Mario Bros.
+- [x] Menentukan palet 4 world: Overworld, Underground, Sunset, Snowy Peaks.
+- [x] Menentukan elemen wajib: koin, pipa hijau, blok tanya, mushroom +100, bintang booster, dan tiang bendera.
 - [x] Menentukan kontrol: keyboard (Arrow/WASD/Shift/Space/P) + tombol sentuh.
-- [x] Menentukan aturan menang/kalah: kumpulkan koin, injak drone, hindari pit/monster, capai portal.
-- [x] Menentukan gaya visual: low-poly 3D cerah, kota pastel, taman, dan langit lembut dengan 4 palet dunia.
 
 ### Phase 1: Setup Single-File `index.html`
 - [x] Kerangka HTML5 dengan meta tag Zero-Cache.
-- [x] Kanvas WebGL responsif dengan aspect ratio 4:3.
-- [x] Struktur kode modular 8 blok.
+- [x] Canvas 2D 320 × 240 responsif dengan aspect ratio 4:3.
+- [x] Struktur kode modular (config, themes, audio, input, state, physics, rendering, UI, loop).
 - [x] Game loop `requestAnimationFrame` dengan fixed timestep fisika 60 Hz.
-- [x] Adaptive resolution untuk perangkat dengan FPS rendah.
+- [x] `imageSmoothingEnabled = false` agar pixel-art tetap tajam.
 
 ### Phase 2: Username & Leaderboard LocalStorage
-- [x] Input username dengan validasi 1–15 karakter dan sanitasi anti-XSS.
+- [x] Input username 1–15 karakter + sanitasi anti-XSS.
 - [x] Menyimpan username terakhir di `arcade_last_username`.
 - [x] Menyimpan Top 10 skor di `arcade_leaderboard`.
-- [x] UI tabel leaderboard yang bisa diakses dari menu.
+- [x] Tabel leaderboard klasik yang dapat diakses dari menu.
+- [x] Tombol “Ganti Nama” setelah username tersimpan.
 
-### Phase 3: Mekanik Inti Permainan
-- [x] State `MENU`, `PLAYING`, `PAUSED`, `LEVELCLEAR`, `GAMEOVER`, `LEADERBOARD`.
-- [x] Pergerakan pemain, akselerasi, gesekan, coyote time, jump buffer.
-- [x] Boost dengan meter energi, lompat variabel, tunduk/fast-fall.
-- [x] Rintangan, pit, platform, koin, drone patroli.
-- [x] AABB collision dan kamera follow.
-- [x] 4 level dengan layout berbeda dan transisi level.
+### Phase 3: Mekanik Inti Platformer
+- [x] State `MENU`, `INTRO`, `PLAYING`, `PAUSED`, `DYING`, `FLAG`, `LEVELCLEAR`, `GAMEOVER`, `LEADERBOARD`.
+- [x] Akselerasi, gesekan, coyote time, jump buffer, lompat variabel, dan fast-fall.
+- [x] AABB collision untuk tanah, blok, pipa, tangga, dan platform.
+- [x] Kamera follow horizontal dengan parallax background.
+- [x] Nyawa, timer, level intro, respawn, game over, dan victory.
+- [x] 4 world dengan layout handcrafted (1-1) dan generator deterministik (1-2 s.d. 1-4).
 
-### Phase 4: Render 3D, Efek Suara & Visual Juice
-- [x] WebGL shader untuk objek solid, glow lembut, dan langit prosedural dengan matahari/awan.
-- [x] Karakter 3D beranimasi: lari, lompat, tunduk, boost, landing squash, dan death spin.
-- [x] Postur karakter menghadap samping kiri/kanan dengan **satu wajah** (mata, kumis, mulut hanya di sisi kamera), badge topi samping, dan bendera kecil di atas topi.
-- [x] Dunia 3D prosedural: kota pastel, pohon, semak, bunga, matahari, koin, portal, drone, bayangan.
-- [x] Bendera kemenangan besar di atas portal dan area final yang bersih dari platform.
-- [x] Animasi masuk portal: karakter ditarik ke pusat ring, berputar, mengecil, tembus bidang portal, kamera zoom, vortex overlay, dan suara dimensi.
-- [x] Efek suara arcade sintetis (jump, koin, stomp, boost, hit, game over, level clear, portal).
-- [x] Partikel, floating score popup, screen shake, flash, dan level banner.
-- [x] Pemilih tema dunia di menu untuk preview 4 latar.
+### Phase 4: Konten Khas Mario 2D
+- [x] **Koin** 8-bit berputar dengan animasi lebar, +100 poin dan penghitung koin.
+- [x] **Pipa hijau** solid dengan bibir pipa, highlight, dan bayangan.
+- [x] **Blok bata** dan **blok tanya** yang bisa dipukul dari bawah.
+- [x] **Mushroom** keluar dari blok, berjalan, +100 poin, dan membuat pemain besar.
+- [x] **Bintang** keluar dari blok, memantul, +1000 poin, dan memberikan **Star Power** (kebal + kecepatan) selama 10 detik.
+- [x] **Goomba** berpatroli, bisa diinjak (+200), dan menyakiti pemain.
+- [x] **Tiang bendera** merah dengan huruf M, animasi bendera turun, kastil di belakangnya.
+- [x] Efek suara arcade, partikel, floating score, dan HUD pixel.
 
-### Phase 5: Publikasi GitHub Pages
+### Phase 5: UI, Responsif & Publikasi
+- [x] Menu klasik dengan panel krem, border hitam tebal, aksen merah/kuning/biru.
+- [x] Overlay pause, leaderboard, level clear, game over, dan victory.
+- [x] Tombol D-pad + A/B di perangkat sentuh.
+- [x] Layout responsif desktop, tablet, dan ponsel.
 - [x] Repository GitHub publik `aoelairlines/mario-bross`.
 - [x] GitHub Pages aktif dari branch `master` root `/`.
-- [x] Zero-Cache terpasang agar update langsung terlihat.
 - [x] Verifikasi live demo: `https://aoelairlines.github.io/mario-bross/`.
 
 ---
@@ -76,21 +85,22 @@ Dokumen ini adalah rencana kerja dan log perkembangan proyek game arcade 3D dala
 | ID | Tugas / Fitur | Fase | Status | Pelaksana | Catatan |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **T-00** | Template `AGENTS.md` & `PLAN.md` | Fondasi | `DONE` | AI | Template standar siswa |
-| **T-01** | Konsep game 3D warna-warni | Phase 0 | `DONE` | AI + Siswa | Mario-inspired 3D platformer |
+| **T-01** | Konsep 2D classic pixel platformer | Phase 0 | `DONE` | AI + Siswa | Referensi World 1-1 |
 | **T-02** | Skeleton `index.html` + Zero-Cache | Phase 1 | `DONE` | AI | Single-file, tanpa dependensi |
 | **T-03** | Username & leaderboard Top 10 | Phase 2 | `DONE` | AI | LocalStorage, sanitasi, tabel |
 | **T-04** | Fisika platformer & tabrakan | Phase 3 | `DONE` | AI | AABB, coyote time, jump buffer |
 | **T-05** | Audio synth & partikel | Phase 4 | `DONE` | AI | Web Audio API, efek arcade |
 | **T-06** | Deploy GitHub Pages | Phase 5 | `DONE` | AI | `https://aoelairlines.github.io/mario-bross/` |
-| **T-07** | Boost, variabel jump, tunduk, tombol sentuh | Phase 3 | `DONE` | AI | Shift/B + D-pad + A/B |
-| **T-08** | 4 level dengan tema warna-warni | Phase 3 | `DONE` | AI | Sunny Plaza, Candy Clouds, Golden Autumn, Snowy Town |
-| **T-09** | Pause, level clear, victory, leaderboard | Phase 4 | `DONE` | AI | Alur layar lengkap |
-| **T-10** | Renderer WebGL 3D + karakter 3D | Phase 4 | `DONE` | AI | Prosedural, low-poly, beranimasi |
-| **T-11** | Background mode 4 tema + preview menu | Phase 4 | `DONE` | AI | Tombol tema langsung mengganti scene |
-| **T-12** | UI warna-warni + responsif + adaptive resolution | Phase 4 | `DONE` | AI | Desktop, tablet, ponsel |
-| **T-13** | Pengujian Chrome & regresi gameplay | Phase 5 | `DONE` | AI | Koin, stomp, level clear, victory, pause, localStorage, mobile |
-| **T-14** | Profil samping, bendera topi, bendera portal, animasi suction | Phase 4 | `DONE` | AI | Karakter menghadap kiri/kanan; bendera di topi dan di atas portal; transisi dimensi + kamera zoom |
-| **T-15** | Perbaikan wajah profil & redesign tema non-futuristik | Phase 4 | `DONE` | AI | Satu wajah di sisi kamera; tema cerah Sunny Plaza, Candy Clouds, Golden Autumn, Snowy Town; pohon, semak, matahari, UI hangat |
+| **T-07** | Nyawa, timer, intro, respawn, victory | Phase 3 | `DONE` | AI | Alur klasik lengkap |
+| **T-08** | 4 world 2D dengan tema berbeda | Phase 3 | `DONE` | AI | Overworld, Underground, Sunset, Snowy Peaks |
+| **T-09** | Koin, pipa hijau, blok bata/tanya | Phase 4 | `DONE` | AI | Desain dan collision |
+| **T-10** | Mushroom +100 & transformasi besar | Phase 4 | `DONE` | AI | Muncul dari blok tanya |
+| **T-11** | Bintang & Star Power booster | Phase 4 | `DONE` | AI | Kebal, lebih cepat, +1000 |
+| **T-12** | Tiang bendera, kastil, level clear | Phase 4 | `DONE` | AI | Animasi bendera turun |
+| **T-13** | HUD pixel, sprite, background 2D | Phase 4 | `DONE` | AI | Semua digambar via Canvas 2D |
+| **T-14** | Menu, pause, game over, leaderboard | Phase 5 | `DONE` | AI | UI retro responsif |
+| **T-15** | Tombol sentuh + keyboard | Phase 5 | `DONE` | AI | D-pad, A/B, Shift, Space, P |
+| **T-16** | Pengujian Chrome desktop/mobile | Phase 5 | `DONE` | AI | Level 1–4, item, death, flag, victory, leaderboard, touch |
 
 *Status: `TODO` | `IN-PROGRESS` | `DONE`*
 
@@ -100,15 +110,16 @@ Dokumen ini adalah rencana kerja dan log perkembangan proyek game arcade 3D dala
 
 | Versi | Tanggal | Pelaksana | Ringkasan Perubahan | Referensi Commit |
 | :--- | :--- | :--- | :--- | :--- |
-| **v0.7.0** | 2026-11-14 | AI | **Perbaikan wajah profil**: fitur wajah hanya dibangun di sisi yang terlihat kamera sehingga Mario tidak lagi tampak memiliki dua muka; **redesign tema non-futuristik**: Sunny Plaza, Candy Clouds, Golden Autumn, Snowy Town dengan langit cerah, matahari lembut, pohon/semak/bunga low-poly, gedung pastel, aksen hangat, serta label UI WORLD/DUNIA; judul diubah menjadi **Mario 3D Adventure**; bendera topi, bendera portal, dan animasi suction tetap dipertahankan | `-` |
-| **v0.6.0** | 2026-11-07 | AI | Karakter diubah ke **postur profil samping** kiri/kanan dengan mata samping dan badge topi samping; aksesori **bendera kecil di atas topi**; **bendera kemenangan besar** di atas portal; **animasi tersedot portal**: kamera zoom, vortex CSS, karakter berputar-mengecil-tembus bidang portal, partikel pusaran, dan SFX dimensi; area final diperpanjang agar bendera/portal tidak tertutup platform; pengujian desktop, mobile, level clear, final victory, pause, dan retry | `-` |
-| **v0.5.0** | 2026-11-07 | AI | Transformasi total ke **Mario Neon 3D**: renderer WebGL 3D prosedural tanpa library, karakter plumber low-poly beranimasi, 4 background futuristik (Neon City, Holo Garden, Solar District, Cryo Core), skyline gedung neon, planet bercincin, mobil terbang, portal energi, koin torus, drone, bayangan, fog, bloom additive, UI cyberpunk baru, preview tema di menu, mobile layout, adaptive resolution, dan pengujian lengkap | `30e897f` |
-| **v0.4.2** | 2026-10-31 | AI | Efek suara baru: koin bernada cerah khas arcade, impact saat menabrak monster, dan jingle kekalahan | `-` |
-| **v0.4.1** | 2026-10-31 | AI | Perbaikan hasil review: clamp kecepatan jalan vs BOOST, koin tidak tertanam di platform, hint tombol diperjelas, reset menu memakai `startLevel` | `-` |
-| **v0.4.0** | 2026-10-31 | AI | Fitur BOOST, lompat variabel, tunduk, tombol on-screen, 4 level dengan tema prosedural, overlay pause/level clear/victory | `-` |
-| **v0.3.0** | 2026-10-24 | AI | Rilis game lengkap Pixel Coin Adventure: platformer 2D Mario-like, 8 blok modular, leaderboard LocalStorage | `-` |
-| **v0.2.2** | 2026-10-24 | AI | Panduan integrasi Google AI Studio & penegasan repo wajib Public | `07475fb` |
-| **v0.2.1** | 2026-10-24 | AI | Panduan aktivasi GitHub Pages (CLI & Web UI) | `3aaf671` |
+| **v0.8.0** | 2026-11-14 | AI | **Redesign total ke 2D classic pixel-art**: renderer Canvas 2D 320×240, langit biru, awan, bukit/semak, tanah bata, blok bata & blok tanya, koin berputar, **pipa hijau**, **mushroom +100 & menjadi besar**, **bintang booster/kebal**, Goomba, tiang bendera, kastil, HUD SCORE/COINS/WORLD/TIME/LIVES, 3 nyawa, timer 300 detik, 4 world bertema, menu/overlay retro, kontrol sentuh, serta leaderboard tetap dipertahankan | `-` |
+| **v0.7.0** | 2026-11-14 | AI | **Mario 3D Adventure**: perbaikan wajah profil satu sisi; tema non-futuristik Sunny Plaza, Candy Clouds, Golden Autumn, Snowy Town; bendera topi/portal, animasi suction | `b659b39` |
+| **v0.6.0** | 2026-11-07 | AI | Karakter profil samping, bendera topi, bendera portal, animasi tersedot portal | `1830137` |
+| **v0.5.0** | 2026-11-07 | AI | Transformasi 3D WebGL prosedural dengan 4 background futuristik | `30e897f` |
+| **v0.4.2** | 2026-10-31 | AI | Efek suara koin, impact monster, dan jingle kekalahan | `-` |
+| **v0.4.1** | 2026-10-31 | AI | Perbaikan clamp kecepatan, koin, hint tombol, reset menu | `-` |
+| **v0.4.0** | 2026-10-31 | AI | Fitur BOOST, variabel jump, tunduk, tombol on-screen, 4 level, overlay | `-` |
+| **v0.3.0** | 2026-10-24 | AI | Rilis game lengkap Pixel Coin Adventure 2D + leaderboard | `-` |
+| **v0.2.2** | 2026-10-24 | AI | Panduan Google AI Studio & repo wajib Public | `07475fb` |
+| **v0.2.1** | 2026-10-24 | AI | Panduan aktivasi GitHub Pages | `3aaf671` |
 | **v0.2.0** | 2026-10-24 | AI | Single Model AI untuk siswa, modularisasi 8 blok | `2954bb0` |
 | **v0.1.0** | 2026-10-24 | AI | Inisialisasi `AGENTS.md` dan `PLAN.md` | `47aa88e` |
 
@@ -116,12 +127,18 @@ Dokumen ini adalah rencana kerja dan log perkembangan proyek game arcade 3D dala
 
 ## 5. Catatan Teknis
 
-- **Tanpa dependensi**: tidak ada CDN, library, file gambar, atau model eksternal. Semua geometri dibuat dengan `SolidBuilder`/`NeonBuilder`, semua tekstur efek dibuat lewat shader.
-- **Struktur 8 blok**: config/WebGL, audio, input, state/entity, collision/physics, LocalStorage, rendering/UI, game loop.
-- **Wajah tunggal**: fitur wajah (mata, kumis, mulut, sideburn, badge topi) hanya dibuat untuk sisi yang menghadap kamera; sisi jauh tidak diberi fitur duplikat.
-- **Palet dunia**: Sunny Plaza (hijau/oranye), Candy Clouds (pink/biru), Golden Autumn (oranye/cokelat), Snowy Town (biru/putih). Tema diterapkan ke gedung, langit, tanah, platform, portal, dan UI.
-- **Kualitas adaptif**: device pixel ratio dibatasi 1.5; bila FPS terukur < 30, resolusi render diturunkan otomatis ke 72% tanpa mengubah layout.
-- **Kontrol**: `← →`/`A D` gerak, `Shift`/`B` boost, `↑`/`Space` lompat, `↓` tunduk, `P`/`Esc` pause.
-- **Portal entry**: saat menyentuh goal, fisika normal dihentikan sementara, kamera fokus ke portal, karakter dianimasikan masuk, lalu level clear/victory dipicu setelah ±1,27 detik. Pause dinonaktifkan selama transisi.
-- **Runway final**: lebar tiap level ditambah 160 px agar portal dan bendera kemenangan berada di area kosong, tidak bertabrakan dengan platform terakhir.
+- **Tanpa dependensi**: tidak ada CDN, library, font eksternal, atau file gambar. Seluruh sprite, tile, blok, pipa, koin, mushroom, bintang, bendera, kastil, dan background digambar dengan `CanvasRenderingContext2D`.
+- **Resolusi internal**: 320 × 240 (4:3), HUD 28 px di bagian atas, permukaan tanah pada `y = 208`, tile 16 px.
+- **Struktur kode**: config/canvas → themes & level data → audio → input → state/level building → physics/flow → rendering → UI → main loop.
+- **Fisika**: fixed timestep 60 Hz, AABB collision, coyote time, jump buffer, variable jump, dan fast-fall.
+- **Koin**: `+100` poin, animasi berputar; koin dari blok tanya muncul sebagai animasi pop.
+- **Mushroom**: keluar dari blok tanya, berjalan, memberi `+100` poin dan mengubah pemain menjadi big (tinggi 28 px).
+- **Bintang**: `+1000` poin; `starTimer = 600` frame (±10 detik) dengan kecepatan naik, kebal, dan efek pelangi.
+- **Pipa hijau**: solid, tinggi 2–4 tile, dapat dipijak/dilompati.
+- **Tiang bendera**: goal di akhir world; saat disentuh pemain meluncur ke bawah, bendera turun, lalu level clear/victory.
+- **Nyawa**: 3; jatuh ke pit, tersentuh musuh saat kecil, atau waktu habis mengurangi nyawa. Nyawa 0 → Game Over.
+- **HUD**: SCORE, COINS, WORLD, TIME, LIVES, indikator STAR saat aktif.
+- **Kontrol**: `← →`/`A D` gerak, `Shift`/`B` lari, `↑`/`Space` lompat, `↓` tunduk/fast-fall, `P`/`Esc` pause, `Enter` mulai.
+- **Touch**: D-pad kiri/bawah/kanan + tombol A (lompat) dan B (lari), muncul otomatis di perangkat sentuh/layar sempit.
 - **Zero-Cache**: setiap update yang di-push langsung aktif setelah deploy GitHub Pages selesai.
+- **Fan-made**: bukan produk resmi Nintendo; seluruh visual dibuat ulang secara prosedural.

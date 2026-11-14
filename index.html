@@ -1196,11 +1196,16 @@ window.addEventListener('blur', clearInputs);
 /* ============================================================
    5. PLAYER, WORLD & GAME STATE
    ============================================================ */
+const SMALL_W = 14;
+const SMALL_H = 24;
+const BIG_W = 16;
+const BIG_H = 32;
+
 const player = {
   x: 32,
-  y: GROUND_Y - 16,
-  w: 12,
-  h: 16,
+  y: GROUND_Y - SMALL_H,
+  w: SMALL_W,
+  h: SMALL_H,
   vx: 0,
   vy: 0,
   dir: 1,
@@ -1376,8 +1381,8 @@ function buildLevel(index, options = {}) {
     player.big = false;
     starTimer = 0;
   }
-  player.h = player.big ? 28 : 16;
-  player.w = 12;
+  player.h = player.big ? BIG_H : SMALL_H;
+  player.w = player.big ? BIG_W : SMALL_W;
   player.x = mode === 'menu' ? 96 : 32;
   player.y = GROUND_Y - player.h;
   player.vx = 0;
@@ -1546,8 +1551,9 @@ function damagePlayer() {
   if (player.big) {
     const feet = player.y + player.h;
     player.big = false;
-    player.h = 16;
-    player.y = feet - 16;
+    player.h = SMALL_H;
+    player.w = SMALL_W;
+    player.y = feet - SMALL_H;
     invulnTimer = INVULN_TIME;
     SFX.hurt();
     spawnParticles(player.x + 6, player.y + 10, '#ffffff', 8, 2);
@@ -1693,8 +1699,9 @@ function updateItems() {
         if (!player.big) {
           const feet = player.y + player.h;
           player.big = true;
-          player.h = 28;
-          player.y = feet - 28;
+          player.h = BIG_H;
+          player.w = BIG_W;
+          player.y = feet - BIG_H;
         }
         SFX.powerup();
       } else {
@@ -2373,142 +2380,228 @@ function drawFlagpole() {
   drawFlagBanner(sx + 2, flag.bannerY);
 }
 
-/* ---------- characters & enemies ---------- */
-function drawSmallMario(ox, oy, dir, walk, jumping, climb, star) {
-  ctx.save();
-  ctx.translate(Math.round(ox) + 8, Math.round(oy));
-  if (dir < 0) ctx.scale(-1, 1);
-  const K = INK;
-  const R = star ? STAR_COLORS[(Math.floor(frame / 4) % 4)] : '#e52521';
-  const B = star ? STAR_COLORS[(Math.floor(frame / 4) + 2) % 4] : '#2038ec';
-  const r = (x, y, w, h, c) => { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); };
-  const step = walk ? (Math.floor(frame / 6) % 2 === 0 ? 1 : -1) : 0;
-  const jump = jumping ? 1 : 0;
-  // cap
-  r(-5, 0, 10, 3, K);
-  r(-4, 0, 8, 2, R);
-  r(4, 2, 5, 2, K);
-  r(4, 2, 4, 1, R);
-  // face
-  r(-5, 2, 9, 7, K);
-  r(-4, 2, 8, 6, SKIN);
-  r(-6, 5, 2, 3, SKIN);
-  r(1, 4, 2, 2, K);
-  r(3, 6, 3, 2, SKIN);
-  r(-1, 7, 5, 2, K);
-  r(-4, 8, 8, 1, K);
-  // shirt / overalls
-  r(-4, 9, 9, 5, K);
-  r(-3, 9, 7, 2, R);
-  r(-3, 11, 7, 4, B);
-  r(-3, 11, 1, 3, B);
-  r(2, 11, 1, 1, GOLD);
-  r(-4, 12, 1, 3, SKIN);
-  // legs
-  if (jump) {
-    r(-5, 14, 4, 2, B);
-    r(1, 13, 4, 2, B);
-    r(-6, 15, 4, 1, SHOE);
-    r(2, 14, 5, 1, SHOE);
-  } else if (step !== 0) {
-    r(-4, 14, 3, 2, B);
-    r(1, 13, 4, 2, B);
-    r(-5, 15, 4, 1, SHOE);
-    r(2, 14, 4, 1, SHOE);
-  } else {
-    r(-4, 14, 3, 2, B);
-    r(1, 14, 3, 2, B);
-    r(-5, 15, 4, 1, SHOE);
-    r(2, 15, 4, 1, SHOE);
-  }
-  // arm
-  if (climb) {
-    r(4, 6, 2, 4, R);
-    r(5, 4, 2, 3, SKIN);
-  } else if (jump) {
-    r(4, 8, 2, 3, R);
-    r(5, 6, 2, 2, SKIN);
-  } else {
-    r(4, 10, 2, 3, R);
-    r(5, 12, 2, 2, SKIN);
-  }
-  ctx.restore();
-}
+/* ---------- detailed Mario sprite ---------- */
+const MARIO_PALETTE = {
+  outline: '#160f0b',
+  red: '#e52521',
+  redDark: '#a81010',
+  redLight: '#ff6a4a',
+  skin: '#ffc48c',
+  skinDark: '#d88c50',
+  skinLight: '#ffe2ba',
+  hair: '#6b3a16',
+  hairDark: '#3a1e0c',
+  blue: '#2048d8',
+  blueDark: '#10208c',
+  blueLight: '#4c78ff',
+  white: '#ffffff',
+  whiteShade: '#d8e0f0',
+  yellow: '#fbd000',
+  shoe: '#7a421c',
+  shoeDark: '#3a1e0c',
+  shoeLight: '#b06a32'
+};
 
-function drawBigMario(ox, oy, dir, walk, jumping, climb, star) {
-  ctx.save();
-  ctx.translate(Math.round(ox) + 8, Math.round(oy));
-  if (dir < 0) ctx.scale(-1, 1);
-  const K = INK;
-  const R = star ? STAR_COLORS[(Math.floor(frame / 4) % 4)] : '#e52521';
-  const B = star ? STAR_COLORS[(Math.floor(frame / 4) + 2) % 4] : '#2038ec';
-  const r = (x, y, w, h, c) => { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); };
-  const step = walk ? (Math.floor(frame / 7) % 2 === 0 ? 1 : -1) : 0;
-  // cap
-  r(-6, 0, 12, 3, K);
-  r(-5, 0, 10, 2, R);
-  r(5, 2, 5, 2, K);
-  r(5, 2, 4, 1, R);
-  // face
-  r(-6, 2, 11, 9, K);
-  r(-5, 2, 10, 8, SKIN);
-  r(-7, 6, 2, 3, SKIN);
-  r(2, 5, 2, 2, K);
-  r(4, 7, 3, 2, SKIN);
-  r(-1, 8, 5, 2, K);
-  r(-5, 9, 9, 1, K);
-  // neck
-  r(-2, 11, 4, 2, SKIN);
-  // torso
-  r(-6, 12, 12, 9, K);
-  r(-5, 12, 10, 3, R);
-  r(-5, 15, 10, 6, B);
-  r(-5, 15, 2, 6, B);
-  r(2, 15, 1, 1, GOLD);
-  r(-5, 20, 10, 2, B);
-  // arms
-  if (jumping || climb) {
-    r(-8, 12, 3, 5, R);
-    r(-9, 9, 3, 4, SKIN);
-    r(5, 12, 3, 5, R);
-    r(6, 9, 3, 4, SKIN);
-  } else {
-    r(-8, 14, 3, 6, R);
-    r(-9, 20, 3, 3, SKIN);
-    r(5, 14, 3, 6, R);
-    r(6, 20, 3, 3, SKIN);
+const MARIO_POSES = {
+  idle: {
+    backArm: { x: 2, y: 18, hx: 0, hy: 22 },
+    frontArm: { x: 18, y: 18, hx: 18, hy: 22 },
+    backLeg: { x: 8, y: 24, sx: 4, sy: 28 },
+    frontLeg: { x: 13, y: 24, sx: 12, sy: 28 }
+  },
+  run1: {
+    backArm: { x: 2, y: 15, hx: 0, hy: 18 },
+    frontArm: { x: 18, y: 19, hx: 18, hy: 23 },
+    backLeg: { x: 5, y: 24, sx: 1, sy: 28 },
+    frontLeg: { x: 14, y: 23, sx: 14, sy: 26 }
+  },
+  run2: {
+    backArm: { x: 2, y: 19, hx: 0, hy: 23 },
+    frontArm: { x: 18, y: 16, hx: 18, hy: 19 },
+    backLeg: { x: 8, y: 23, sx: 7, sy: 26 },
+    frontLeg: { x: 13, y: 24, sx: 12, sy: 28 }
+  },
+  jump: {
+    backArm: { x: 2, y: 13, hx: 0, hy: 15 },
+    frontArm: { x: 18, y: 12, hx: 18, hy: 14 },
+    backLeg: { x: 6, y: 23, sx: 2, sy: 25 },
+    frontLeg: { x: 14, y: 23, sx: 14, sy: 26 }
+  },
+  climb: {
+    backArm: { x: 3, y: 12, hx: 1, hy: 12 },
+    frontArm: { x: 17, y: 11, hx: 18, hy: 11 },
+    backLeg: { x: 8, y: 24, sx: 5, sy: 28 },
+    frontLeg: { x: 13, y: 24, sx: 12, sy: 28 }
   }
-  // legs
-  if (jumping) {
-    r(-5, 23, 4, 4, B);
-    r(1, 22, 4, 4, B);
-    r(-6, 27, 5, 1, SHOE);
-    r(2, 26, 5, 1, SHOE);
-  } else if (step !== 0) {
-    r(-5, 23, 3, 4, B);
-    r(1, 24, 4, 3, B);
-    r(-6, 27, 4, 1, SHOE);
-    r(2, 27, 4, 1, SHOE);
-  } else {
-    r(-5, 23, 4, 4, B);
-    r(1, 23, 4, 4, B);
-    r(-6, 27, 5, 1, SHOE);
-    r(2, 27, 5, 1, SHOE);
+};
+
+const marioSpriteCanvas = document.createElement('canvas');
+marioSpriteCanvas.width = 24;
+marioSpriteCanvas.height = 32;
+const marioSpriteCtx = marioSpriteCanvas.getContext('2d');
+marioSpriteCtx.imageSmoothingEnabled = false;
+
+function drawMarioDetailed(g, opts) {
+  const star = !!opts.star;
+  let P = MARIO_PALETTE;
+  if (star) {
+    const a = STAR_COLORS[(Math.floor(frame / 4)) % STAR_COLORS.length];
+    const b = STAR_COLORS[(Math.floor(frame / 4) + 2) % STAR_COLORS.length];
+    const c = STAR_COLORS[(Math.floor(frame / 4) + 4) % STAR_COLORS.length];
+    P = Object.assign({}, MARIO_PALETTE, {
+      red: a,
+      redDark: b,
+      blue: c,
+      blueDark: b
+    });
   }
-  ctx.restore();
+  const p = (x, y, w, h, c) => {
+    if (w < 1 || h < 1) return;
+    g.fillStyle = c;
+    g.fillRect(Math.round(x), Math.round(y), Math.round(w), Math.round(h));
+  };
+  const e = (cx, cy, rx, ry, c) => {
+    for (let dy = -ry; dy <= ry; dy++) {
+      const span = Math.round(rx * Math.sqrt(Math.max(0, 1 - (dy * dy) / (ry * ry))));
+      p(cx - span, cy + dy, span * 2 + 1, 1, c);
+    }
+  };
+  const glove = (x, y) => {
+    p(x - 1, y - 1, 7, 7, P.outline);
+    p(x, y, 5, 5, P.white);
+    p(x + 1, y + 1, 1, 3, P.whiteShade);
+    p(x, y + 4, 5, 1, P.outline);
+    p(x + 2, y + 1, 1, 3, P.outline);
+  };
+  const arm = (a, back) => {
+    p(a.x - 1, a.y - 1, 6, 9, P.outline);
+    p(a.x, a.y, 4, 7, back ? P.redDark : P.red);
+    p(a.x, a.y + 5, 4, 2, P.redDark);
+    if (!back) p(a.x + 1, a.y, 1, 4, P.redLight);
+    glove(a.hx, a.hy);
+  };
+  const leg = (l, back) => {
+    p(l.x - 1, l.y - 1, 7, 9, P.outline);
+    p(l.x, l.y, 5, 7, back ? P.blueDark : P.blue);
+    p(l.x + 1, l.y + 1, 1, 4, P.blueLight);
+    p(l.x, l.y + 6, 5, 1, P.blueDark);
+    p(l.sx - 1, l.sy - 1, 10, 6, P.outline);
+    p(l.sx, l.sy, 8, 4, P.shoe);
+    p(l.sx, l.sy + 3, 8, 1, P.shoeDark);
+    p(l.sx + 1, l.sy + 1, 3, 1, P.shoeLight);
+  };
+
+  const pose = MARIO_POSES[opts.pose] || MARIO_POSES.idle;
+
+  // rear arm behind the body
+  arm(pose.backArm, true);
+
+  // red shirt + blue overalls, with a thick dark outline and visible leg gap
+  p(3, 16, 18, 8, P.outline);
+  p(4, 17, 16, 6, P.red);
+  p(4, 19, 16, 4, P.blue);
+  p(4, 18, 16, 1, P.redDark);
+  p(4, 22, 16, 1, P.blueDark);
+  p(6, 17, 3, 5, P.blue);
+  p(6, 17, 1, 5, P.blueDark);
+  p(15, 17, 3, 5, P.blue);
+  p(17, 17, 1, 5, P.blueDark);
+  p(7, 20, 2, 2, P.yellow);
+  p(15, 20, 2, 2, P.yellow);
+  p(5, 17, 2, 1, P.white);
+
+  // both legs in front of the torso edge so they read as real legs
+  leg(pose.backLeg, true);
+  leg(pose.frontLeg, false);
+  arm(pose.frontArm, false);
+
+  // head silhouette + skin
+  e(11, 10, 10, 9, P.outline);
+  e(11, 10, 9, 8, P.skin);
+
+  // hair, ear and cheek
+  p(2, 7, 4, 2, P.hair);
+  p(1, 9, 5, 6, P.hair);
+  p(2, 14, 3, 2, P.hair);
+  p(1, 9, 2, 6, P.hairDark);
+  p(3, 10, 3, 4, P.skinDark);
+  p(4, 11, 1, 2, P.hairDark);
+  p(5, 13, 3, 2, P.skinDark);
+
+  // brow, eye, nose
+  p(14, 8, 4, 1, P.hairDark);
+  p(15, 9, 3, 3, P.outline);
+  p(16, 10, 1, 2, P.white);
+  p(19, 10, 4, 5, P.outline);
+  p(20, 10, 2, 4, P.skin);
+  p(20, 10, 1, 1, P.skinLight);
+  p(20, 13, 2, 1, P.skinDark);
+
+  // big moustache + chin
+  p(9, 13, 12, 2, P.hair);
+  p(10, 15, 10, 1, P.hairDark);
+  p(8, 14, 2, 2, P.hair);
+  p(20, 13, 1, 2, P.hair);
+  p(12, 16, 7, 1, P.outline);
+  p(12, 17, 5, 1, P.skinDark);
+  p(9, 17, 5, 2, P.skinDark);
+
+  // red cap + white M badge
+  e(11, 4, 10, 5, P.outline);
+  e(11, 4, 9, 4, P.red);
+  p(12, 5, 12, 3, P.outline);
+  p(13, 5, 10, 2, P.red);
+  p(13, 6, 10, 1, P.redDark);
+  p(4, 8, 15, 1, P.outline);
+  e(18, 3, 4, 4, P.outline);
+  e(18, 3, 3, 3, P.white);
+  p(16, 1, 1, 5, P.red);
+  p(20, 1, 1, 5, P.red);
+  p(17, 2, 1, 1, P.red);
+  p(19, 2, 1, 1, P.red);
+  p(18, 3, 1, 1, P.red);
+  p(7, 1, 3, 1, P.white);
+  p(6, 2, 1, 1, P.white);
 }
 
 function drawPlayer() {
   if (!player.alive && gameState !== STATE_DYING) return;
   if (invulnTimer > 0 && Math.floor(frame / 4) % 2 === 0) return;
-  const sx = Math.round(player.x - cameraX) - 2;
-  const sy = Math.round(player.y);
-  const walk = Math.abs(player.vx) > 0.12 && player.grounded;
-  const jumping = !player.grounded && player.vy < 0;
-  const climbing = gameState === STATE_FLAG;
+
   const star = starTimer > 0;
-  if (player.big) drawBigMario(sx, sy, player.dir, walk, jumping, climbing, star);
-  else drawSmallMario(sx, sy, player.dir, walk, jumping, climbing, star);
+  const climbing = gameState === STATE_FLAG;
+  let pose = 'idle';
+  if (climbing) pose = 'climb';
+  else if (!player.grounded) pose = 'jump';
+  else if (Math.abs(player.vx) > 0.12) pose = Math.floor(player.walkFrame) % 2 ? 'run2' : 'run1';
+
+  const feet = Math.round(player.y + player.h);
+  let sx, sy, w, h;
+  if (player.big) {
+    w = 24;
+    h = 32;
+    sx = Math.round(player.x - cameraX + player.w / 2 - w / 2);
+    sy = feet - h;
+    ctx.save();
+    ctx.translate(sx + (player.dir < 0 ? w : 0), sy);
+    if (player.dir < 0) ctx.scale(-1, 1);
+    drawMarioDetailed(ctx, { pose, star });
+    ctx.restore();
+  } else {
+    w = 18;
+    h = 24;
+    marioSpriteCtx.clearRect(0, 0, 24, 32);
+    drawMarioDetailed(marioSpriteCtx, { pose, star });
+    sx = Math.round(player.x - cameraX + player.w / 2 - w / 2);
+    sy = feet - h;
+    ctx.save();
+    ctx.translate(sx + (player.dir < 0 ? w : 0), sy);
+    if (player.dir < 0) ctx.scale(-1, 1);
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(marioSpriteCanvas, 0, 0, 24, 32, 0, 0, w, h);
+    ctx.restore();
+  }
+
   if (star && frame % 5 === 0) {
     ctx.fillStyle = STAR_COLORS[(frame / 5) % STAR_COLORS.length | 0];
     ctx.fillRect(sx - 3 + (frame % 7), sy + 2 + (frame % 9), 2, 2);

@@ -10,7 +10,7 @@ Dokumen ini adalah rencana kerja dan log perkembangan proyek game arcade 2D dala
 - **Genre**: 2D Classic Pixel Platformer (side-scrolling, gaya 8-bit)
 - **Format**: Single-File HTML (`index.html`) tanpa dependensi eksternal
 - **Renderer**: Canvas 2D murni, resolusi internal **320 × 240** (4:3), di-upscale dengan `image-rendering: pixelated`
-- **Karakter**: Plumber pixel-art 16 × 16 (small) / 16 × 28 (big), menghadap samping kiri/kanan, topi merah, kumis, overall biru, dan sepatu cokelat
+- **Karakter**: Plumber pixel-art detail 18 × 24 (small) / 24 × 32 (big), menghadap samping kiri/kanan; topi merah dengan emblem **M putih**, kumis dan rambut cokelat, mata dengan kilau, sarung tangan putih, overall biru dengan dua kancing kuning, serta sepatu cokelat ber-outline hitam tebal
 - **Dunia**: 4 world bertema klasik 2D — **Overworld, Underground, Sunset, Snowy Peaks**
 - **Elemen Visual**: langit biru, awan pixel, bukit dan semak hijau, tanah bata, pipa hijau, blok bata, blok tanya, koin berputar, mushroom, bintang, tiang bendera, dan kastil
 - **Item & Skor**:
@@ -67,6 +67,8 @@ Dokumen ini adalah rencana kerja dan log perkembangan proyek game arcade 2D dala
 - [x] **Bintang** keluar dari blok, memantul, +1000 poin, dan memberikan **Star Power** (kebal + kecepatan) selama 10 detik.
 - [x] **Goomba** berpatroli, bisa diinjak (+200), dan menyakiti pemain.
 - [x] **Tiang bendera** merah dengan huruf M, animasi bendera turun, kastil di belakangnya.
+- [x] **Redesign karakter Mario**: sprite pixel-art lebih besar dan detail seperti referensi — emblem M pada topi, sarung tangan putih, kumis tebal, rambut, shading, kancing overall kuning, dan animasi idle/run/jump/climb.
+- [x] Hitbox karakter disesuaikan (small 14 × 24, big 16 × 32) agar kepala tidak menembus blok saat melompat.
 - [x] Efek suara arcade, partikel, floating score, dan HUD pixel.
 
 ### Phase 5: UI, Responsif & Publikasi
@@ -101,6 +103,7 @@ Dokumen ini adalah rencana kerja dan log perkembangan proyek game arcade 2D dala
 | **T-14** | Menu, pause, game over, leaderboard | Phase 5 | `DONE` | AI | UI retro responsif |
 | **T-15** | Tombol sentuh + keyboard | Phase 5 | `DONE` | AI | D-pad, A/B, Shift, Space, P |
 | **T-16** | Pengujian Chrome desktop/mobile | Phase 5 | `DONE` | AI | Level 1–4, item, death, flag, victory, leaderboard, touch |
+| **T-17** | Redesign sprite Mario detail + hitbox baru | Phase 4 | `DONE` | AI | Emblem M, sarung tangan putih, overall detail, animasi; hitbox 14×24 / 16×32 agar tidak clipping |
 
 *Status: `TODO` | `IN-PROGRESS` | `DONE`*
 
@@ -110,7 +113,8 @@ Dokumen ini adalah rencana kerja dan log perkembangan proyek game arcade 2D dala
 
 | Versi | Tanggal | Pelaksana | Ringkasan Perubahan | Referensi Commit |
 | :--- | :--- | :--- | :--- | :--- |
-| **v0.8.0** | 2026-11-14 | AI | **Redesign total ke 2D classic pixel-art**: renderer Canvas 2D 320×240, langit biru, awan, bukit/semak, tanah bata, blok bata & blok tanya, koin berputar, **pipa hijau**, **mushroom +100 & menjadi besar**, **bintang booster/kebal**, Goomba, tiang bendera, kastil, HUD SCORE/COINS/WORLD/TIME/LIVES, 3 nyawa, timer 300 detik, 4 world bertema, menu/overlay retro, kontrol sentuh, serta leaderboard tetap dipertahankan | `-` |
+| **v0.8.1** | 2026-11-14 | AI | **Upgrade kualitas sprite Mario**: karakter digambar ulang lebih detail (emblem M pada topi, sarung tangan putih, kumis/rambut, mata berkilau, shading overall biru, dua kancing kuning, sepatu cokelat, outline hitam tebal), ukuran visual small 18×24 / big 24×32, animasi idle/run/jump/climb, dan hitbox baru 14×24 / 16×32 agar tidak ada clipping kepala saat memukul blok | `-` |
+| **v0.8.0** | 2026-11-14 | AI | **Redesign total ke 2D classic pixel-art**: renderer Canvas 2D 320×240, langit biru, awan, bukit/semak, tanah bata, blok bata & blok tanya, koin berputar, **pipa hijau**, **mushroom +100 & menjadi besar**, **bintang booster/kebal**, Goomba, tiang bendera, kastil, HUD SCORE/COINS/WORLD/TIME/LIVES, 3 nyawa, timer 300 detik, 4 world bertema, menu/overlay retro, kontrol sentuh, serta leaderboard tetap dipertahankan | `642c41d` |
 | **v0.7.0** | 2026-11-14 | AI | **Mario 3D Adventure**: perbaikan wajah profil satu sisi; tema non-futuristik Sunny Plaza, Candy Clouds, Golden Autumn, Snowy Town; bendera topi/portal, animasi suction | `b659b39` |
 | **v0.6.0** | 2026-11-07 | AI | Karakter profil samping, bendera topi, bendera portal, animasi tersedot portal | `1830137` |
 | **v0.5.0** | 2026-11-07 | AI | Transformasi 3D WebGL prosedural dengan 4 background futuristik | `30e897f` |
@@ -131,6 +135,8 @@ Dokumen ini adalah rencana kerja dan log perkembangan proyek game arcade 2D dala
 - **Resolusi internal**: 320 × 240 (4:3), HUD 28 px di bagian atas, permukaan tanah pada `y = 208`, tile 16 px.
 - **Struktur kode**: config/canvas → themes & level data → audio → input → state/level building → physics/flow → rendering → UI → main loop.
 - **Fisika**: fixed timestep 60 Hz, AABB collision, coyote time, jump buffer, variable jump, dan fast-fall.
+- **Hitbox karakter**: small 14 × 24 px, big 16 × 32 px. Sprite visual small 18 × 24 dan big 24 × 32; tinggi hitbox dibuat sama dengan tinggi visual agar ujung topi tidak menembus blok saat melompat.
+- **Sprite Mario**: digambar prosedural per piksel pada grid 24 × 32 (big), dengan palet outline, merah, kulit, rambut, biru, putih, kuning, dan cokelat. Small Mario dirender dari sprite yang sama lalu diperkecil nearest-neighbor menjadi 18 × 24 agar detail dan proporsi tetap konsisten.
 - **Koin**: `+100` poin, animasi berputar; koin dari blok tanya muncul sebagai animasi pop.
 - **Mushroom**: keluar dari blok tanya, berjalan, memberi `+100` poin dan mengubah pemain menjadi big (tinggi 28 px).
 - **Bintang**: `+1000` poin; `starTimer = 600` frame (±10 detik) dengan kecepatan naik, kebal, dan efek pelangi.
